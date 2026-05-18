@@ -1,26 +1,89 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply font-arabic bg-white text-gray-900;
+  }
+  
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-brand-main text-white px-8 py-4 rounded-lg font-semibold 
+           hover:bg-brand-dark transition-all duration-300 
+           shadow-lg hover:shadow-xl hover:-translate-y-0.5
+           inline-flex items-center justify-center gap-2;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-brand-main px-8 py-4 rounded-lg font-semibold 
+           border-2 border-brand-main hover:bg-brand-light 
+           transition-all duration-300
+           inline-flex items-center justify-center gap-2;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-gold text-white px-8 py-4 rounded-lg font-semibold 
+           hover:bg-yellow-600 transition-all duration-300
+           shadow-lg hover:shadow-xl
+           inline-flex items-center justify-center gap-2;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-2xl 
+           transition-all duration-300 border border-gray-100
+           overflow-hidden;
+  }
+  
+  .card-hover {
+    @apply hover:-translate-y-1 cursor-pointer;
+  }
+
+  /* Section Titles */
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold text-brand-darkest mb-4;
+  }
+  
+  .section-subtitle {
+    @apply text-xl text-gray-600 max-w-3xl mx-auto;
+  }
+
+  /* Gradient Backgrounds */
+  .bg-gradient-brand {
+    @apply bg-gradient-to-br from-brand-darkest via-brand-dark to-brand-main;
+  }
+  
+  .bg-gradient-light {
+    @apply bg-gradient-to-br from-brand-light to-white;
+  }
+
+  /* Icon Boxes */
+  .icon-box {
+    @apply w-16 h-16 rounded-xl flex items-center justify-center
+           bg-brand-light text-brand-main;
+  }
+  
+  .icon-box-gold {
+    @apply w-16 h-16 rounded-xl flex items-center justify-center
+           bg-accent-gold/10 text-accent-gold;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r 
+           from-brand-main to-brand-dark;
+  }
 }
