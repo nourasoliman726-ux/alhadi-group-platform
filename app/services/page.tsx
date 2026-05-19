@@ -20,7 +20,7 @@ const services = [
     title: "تبديل الكابلات",
     desc: "استبدال الكابلات القديمة والتالفة بكابلات عالية الجودة لضمان سلامة التوصيلات.",
     features: ["كابلات عالية الجهد", "كابلات التوزيع", "كابلات الشبكات", "كابلات التأريض"],
-    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=250&fit=crop",
+    image: "/WhatsApp Image 2026-05-18 at 6.50.52 PM.jpeg",
     tag: null,
   },
   {
@@ -28,7 +28,7 @@ const services = [
     title: "لوحات الكهرباء",
     desc: "تركيب وصيانة وتطوير لوحات التوزيع الكهربائية بجميع أحجامها وأنواعها.",
     features: ["لوحات رئيسية وفرعية", "قواطع الحماية", "أجهزة القياس", "حماية من الصواعق"],
-    image: "https://images.unsplash.com/photo-1555963966-b7ae5404b6ed?w=400&h=250&fit=crop",
+    image: "/WhatsApp Image 2026-05-18 at 6.50.28 PM.jpeg",
     tag: null,
   },
   {
@@ -178,7 +178,7 @@ export default function ServicesPage() {
                   اطلب خدمة الآن
                   <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
                 </Link>
-                <a
+                {/* <a
                   href="tel:+201000000000"
                   className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
                   style={{
@@ -189,7 +189,7 @@ export default function ServicesPage() {
                 >
                   <Phone size={18} />
                   اتصل بنا
-                </a>
+                </a> */}
               </div>
             </div>
 
@@ -502,7 +502,7 @@ export default function ServicesPage() {
                     className="group-hover:-translate-x-1 transition-transform"
                   />
                 </Link>
-                <a
+                {/* <a
                   href="tel:+201000000000"
                   className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
                   style={{
@@ -513,7 +513,7 @@ export default function ServicesPage() {
                 >
                   <Phone size={18} />
                   اتصل بنا مباشرة
-                </a>
+                </a> */}
               </div>
             </div>
           </div>

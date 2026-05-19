@@ -21,8 +21,9 @@ export default function Hero() {
 
     
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-              خدمات الصيانة والمقاولات
-              <span className="block text-accent-gold mt-3">بأيدٍ محترفة وخبرة موثوقة</span>
+             Al Hadi Group
+          
+              <span className="block text-accent-gold mt-3">    للمقاولات العامه و الاعمال الكهربائيه و الصيانه</span>
             </h1>
 
      
@@ -55,14 +56,7 @@ export default function Hero() {
                 اطلب خدمة الآن
                 <ArrowLeft size={20} />
               </Link>
-              
-              <a 
-                href="tel:+966500000000"
-                className="bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border-2 border-white/30 px-8 py-4 rounded-lg font-bold transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <Phone size={20} />
-                اتصل بنا
-              </a>
+            
             </div>
 
             {/* Stats */}
