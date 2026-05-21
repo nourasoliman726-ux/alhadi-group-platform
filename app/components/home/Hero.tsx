@@ -7,15 +7,16 @@ import { useState, useEffect } from "react";
 
 const slides = [
   {
-    image:"https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1200",
+    image:"https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=1400",
     alt: "فني كهرباء محترف"
   },
   {
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2070",
+    image:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1400",
     alt: "مشروع تشطيبات فاخر"
   },
   {
-    image:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1200",
+    image:"https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1400"
+,
     alt: "أعمال تكييف وصيانة"
   }
 ];
