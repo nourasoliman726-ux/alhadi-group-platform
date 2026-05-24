@@ -1,85 +1,93 @@
 import Link from "next/link";
 import {
-  Building2, Home, HandshakeIcon, Key,
+  HardHat, Hammer, Building2, ClipboardList,
   CheckCircle, ArrowLeft, Phone, ChevronLeft,
-  Shield, Clock, Star, TrendingUp
+  Shield, Clock, Star, Award
 } from "lucide-react";
 import Image from "next/image";
 
 const services = [
+{
+  title: "أنظمة الكهرباء الحديثة",
+  desc: "تنفيذ وتمديد الشبكات الكهربائية للمشاريع السكنية والتجارية بأعلى معايير الأمان والجودة.",
+  features: [
+    "تمديدات كهربائية",
+    "لوحات توزيع",
+    "أنظمة إنارة",
+    "صيانة كهربائية"
+  ],
+ image: "https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=500&h=350&fit=crop",
+},
   {
-    title: "تطوير الوحدات والفلل",
-    desc: "العمل على تحسين العقارات السكنية ورفع قيمتها السوقية والجمالية بشكل ملموس.",
-    features: ["تطوير فلل سكنية", "تحسين الواجهات", "رفع القيمة السوقية", "تشطيبات عصرية"],
-    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=500&h=350&fit=crop",
+    title: "إدارة المشاريع الكبرى",
+    desc: "التعاقد على تنفيذ المشاريع الإنشائية وتطوير المباني الحكومية بدقة واحترافية.",
+    features: ["مباني سكنية وتجارية", "مشاريع حكومية", "إشراف هندسي", "ضبط جودة"],
+    image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=500&h=350&fit=crop",
   },
+ {
+  title: "أنظمة الشبكات والاتصالات",
+  desc: "تصميم وتنفيذ شبكات الإنترنت والاتصالات الداخلية للمؤسسات والشركات بكفاءة عالية.",
+  features: [
+    "شبكات داخلية",
+    "تمديد كابلات",
+    "أجهزة اتصال",
+    "حلول تقنية حديثة"
+  ],
+  image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=350&fit=crop",
+},
   {
-    title: "الوساطة والتبادل العقاري",
-    desc: "تقديم خدمات احترافية في بيع وشراء العقارات لضمان أفضل الفرص الاستثمارية.",
-    features: ["بيع وشراء عقارات", "تقييم عقاري", "استشارات استثمارية", "أفضل الفرص"],
-    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&h=350&fit=crop",
-  },
-  {
-    title: "إدارة الأملاك والتأجير",
-    desc: "حلول ذكية في تأجير الوحدات وإدارة العقود لضمان راحة الملاك وحقوق المستأجرين.",
-    features: ["إدارة عقود الإيجار", "تحصيل الإيجارات", "صيانة العقارات", "تقارير دورية"],
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=500&h=350&fit=crop",
-  },
-  {
-    title: "تطوير المباني التجارية",
-    desc: "تطوير وإنشاء المباني التجارية والإدارية وفق أحدث المعايير الهندسية والتصميمية.",
-    features: ["مباني تجارية وإدارية", "مراكز تجارية", "تصميم معماري", "تنفيذ احترافي"],
-    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&h=350&fit=crop",
+    title: "عقود الشركات والمؤسسات",
+    desc: "عقود صيانة وإنشاء شاملة للشركات والمؤسسات الحكومية والخاصة.",
+    features: ["عقود سنوية", "صيانة دورية", "دعم فني متواصل", "تقارير أداء"],
+    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&h=350&fit=crop",
   },
 ];
 
 const whyUs = [
   {
     icon: Shield,
-    title: "خبرة موثوقة",
-    desc: "أكثر من 10 سنوات في مجال التطوير العقاري بسجل حافل من المشاريع الناجحة",
-  },
-  {
-    icon: TrendingUp,
-    title: "رفع قيمة العقار",
-    desc: "نضمن رفع القيمة السوقية لعقارك من خلال التطوير الاحترافي المدروس",
-  },
-  {
-    icon: Star,
-    title: "استشارات مجانية",
-    desc: "نقدم استشارات عقارية مجانية لمساعدتك في اتخاذ القرار الصحيح",
+    title: "ضمان الجودة",
+    desc: "نلتزم بأعلى معايير الجودة في كل مشروع من البداية حتى التسليم",
   },
   {
     icon: Clock,
-    title: "إنجاز سريع",
-    desc: "نلتزم بالجداول الزمنية المتفق عليها ونسلم مشاريعنا في الموعد المحدد",
+    title: "الالتزام بالمواعيد",
+    desc: "نسلم مشاريعنا في الوقت المحدد دون أي تأخير",
+  },
+  {
+    icon: Star,
+    title: "فريق هندسي متخصص",
+    desc: "مهندسون وفنيون ذوو خبرة واسعة في مجال المقاولات",
+  },
+  {
+    icon: Award,
+    title: "مواد عالية الجودة",
+    desc: "نستخدم أفضل المواد والخامات لضمان استدامة المشاريع",
   },
 ];
 
 const stats = [
-  { n: "+150", l: "وحدة مطورة",      icon: "🏠" },
-  { n: "+80",  l: "صفقة عقارية",     icon: "🤝" },
-  { n: "+300", l: "عميل راضٍ",       icon: "😊" },
-  { n: "10+",  l: "سنوات خبرة",      icon: "⭐" },
+  { n: "+200",  l: "مشروع منجز",     icon: "🏗️" },
+  { n: "+50",   l: "عميل شركات",      icon: "🤝" },
+  { n: "10+",   l: "سنوات خبرة",      icon: "⭐" },
+  { n: "100%",  l: "التزام بالجودة",  icon: "✅" },
 ];
 
 const steps = [
-  { n: "01", icon: "🔍", title: "تقييم العقار",     desc: "ندرس العقار ونقيّم إمكانياته وفرص تطويره" },
-  { n: "02", icon: "📐", title: "خطة التطوير",      desc: "نضع خطة تطوير شاملة ومدروسة تناسب ميزانيتك" },
-  { n: "03", icon: "🏗️", title: "بدء التنفيذ",     desc: "ننفذ خطة التطوير بفريق متخصص وإشراف كامل" },
-  { n: "04", icon: "🎯", title: "التسليم والمتابعة", desc: "نسلم العقار المطور ونتابع معك حتى تحقيق أهدافك" },
+  { n: "01", icon: "📋", title: "دراسة المشروع",   desc: "ندرس متطلبات مشروعك ونضع خطة تنفيذ متكاملة" },
+  { n: "02", icon: "📐", title: "عرض السعر",        desc: "نقدم عرض سعر شفاف ومفصل بدون أي تكاليف خفية" },
+  { n: "03", icon: "🏗️", title: "بدء التنفيذ",     desc: "نبدأ التنفيذ بفريق متخصص مع إشراف هندسي كامل" },
+  { n: "04", icon: "🎯", title: "التسليم والضمان",  desc: "نسلم المشروع في الموعد مع ضمان شامل على الأعمال" },
 ];
 
-export default function RealEstatePage() {
+export default function ContractingPage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
 
       {/* ===== Hero ===== */}
       <section
         className="relative py-28 overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 55%, #3b6fa0 100%)",
-        }}
+        style={{ background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 55%, #3b6fa0 100%)" }}
       >
         {/* دوائر ضوئية */}
         <div
@@ -106,7 +114,7 @@ export default function RealEstatePage() {
               الرئيسية
             </Link>
             <ChevronLeft size={14} />
-            <span style={{ color: "#e8edf3" }}>التطوير العقاري</span>
+            <span style={{ color: "#e8edf3" }}>المقاولات العامة</span>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-14 items-center">
@@ -120,9 +128,9 @@ export default function RealEstatePage() {
                   borderColor: "rgba(59,111,160,0.4)",
                 }}
               >
-                <Building2 size={15} style={{ color: "#e8edf3" }} />
+                <HardHat size={15} style={{ color: "#e8edf3" }} />
                 <span className="text-sm font-bold" style={{ color: "#e8edf3" }}>
-                  التطوير العقاري
+                  المقاولات العامة
                 </span>
               </div>
 
@@ -131,31 +139,31 @@ export default function RealEstatePage() {
                   className="text-5xl md:text-6xl font-black leading-tight mb-4"
                   style={{ color: "#ffffff" }}
                 >
-                  تطوير عقاري
+                  مقاولات عامة
                   <span
                     className="block mt-1"
                     style={{ color: "rgba(232,237,243,0.8)" }}
                   >
-                    متكامل واحترافي
+                    بأعلى معايير الجودة
                   </span>
                 </h1>
                 <p
                   className="text-lg leading-relaxed max-w-lg"
                   style={{ color: "rgba(232,237,243,0.7)" }}
                 >
-                  نقدم حلول تطوير عقاري متكاملة تشمل إنشاء وتطوير
-                  المشاريع السكنية والتجارية بأعلى معايير الجودة
-                  والتصميم الحديث.
+                  تنفيذ مشاريع المقاولات العامة بأحدث الأساليب الهندسية
+                  مع الالتزام بالجودة والدقة وسرعة الإنجاز لتقديم
+                  مشاريع متكاملة تليق بعملائنا.
                 </p>
               </div>
 
               <div className="space-y-3">
                 {[
-                  "تطوير مشاريع سكنية",
-                  "تطوير مباني تجارية",
-                  "إدارة وتنفيذ المشاريع",
-                  "تشطيبات عصرية",
-                  "استشارات عقارية مجانية",
+                  "مشاريع سكنية وتجارية",
+                  "تشطيبات متكاملة",
+                  "أعمال كهرباء وبنية تحتية",
+                  "إدارة مواقع ومشاريع",
+                  "تنفيذ وفق المواصفات الحديثة",
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <CheckCircle
@@ -178,8 +186,8 @@ export default function RealEstatePage() {
                   className="group flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 shadow-lg text-white"
                   style={{ backgroundColor: "#3b6fa0" }}
                 >
-                  <Building2 size={18} />
-                  استشارة مجانية
+                  <HardHat size={18} />
+                  اطلب عرض سعر
                   <ArrowLeft
                     size={16}
                     className="group-hover:-translate-x-1 transition-transform"
@@ -187,7 +195,7 @@ export default function RealEstatePage() {
                 </Link>
                 <a
                   href="tel:+201025686280"
-                  className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border"
+                  className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
                   style={{
                     backgroundColor: "rgba(232,237,243,0.1)",
                     borderColor: "rgba(232,237,243,0.25)",
@@ -232,12 +240,7 @@ export default function RealEstatePage() {
 
         {/* موجة */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg
-            viewBox="0 0 1440 60"
-            fill="none"
-            preserveAspectRatio="none"
-            className="w-full"
-          >
+          <svg viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" className="w-full">
             <path
               d="M0 60L1440 60L1440 30C1200 0 960 0 720 15C480 30 240 40 0 30Z"
               fill="#f8fafc"
@@ -255,19 +258,19 @@ export default function RealEstatePage() {
               className="inline-block font-bold text-sm px-4 py-2 rounded-full mb-4"
               style={{ backgroundColor: "#e8edf3", color: "#1e3a5f" }}
             >
-              خدماتنا العقارية
+              مجالات المقاولات
             </span>
             <h2
               className="text-4xl font-black mb-4"
               style={{ color: "#0f1b3d" }}
             >
-              حلول عقارية متكاملة
+              خدمات المقاولات الشاملة
             </h2>
             <p
               className="text-lg max-w-xl mx-auto"
               style={{ color: "#3b6fa0" }}
             >
-              من التطوير إلى الإدارة — كل ما يحتاجه عقارك في مكان واحد
+              نقدم حلول مقاولات متكاملة من الدراسة حتى التسليم
             </p>
           </div>
 
@@ -290,19 +293,14 @@ export default function RealEstatePage() {
                   <div
                     className="absolute inset-0"
                     style={{
-                      background:
-                        "linear-gradient(to top, rgba(15,27,61,0.75) 0%, transparent 60%)",
+                      background: "linear-gradient(to top, rgba(15,27,61,0.75) 0%, transparent 60%)",
                     }}
                   />
                   <div
                     className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-xs font-bold"
-                    style={{
-                      backgroundColor: "rgba(232,237,243,0.15)",
-                      color: "#e8edf3",
-                      backdropFilter: "blur(8px)",
-                    }}
+                    style={{ backgroundColor: "rgba(232,237,243,0.15)", color: "#e8edf3", backdropFilter: "blur(8px)" }}
                   >
-                    تطوير عقاري
+                    مقاولات عامة
                   </div>
                 </div>
 
@@ -342,7 +340,7 @@ export default function RealEstatePage() {
                     className="flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all"
                     style={{ color: "#3b6fa0" }}
                   >
-                    اطلب استشارة
+                    اطلب عرض سعر
                     <ArrowLeft size={15} />
                   </Link>
                 </div>
@@ -370,16 +368,16 @@ export default function RealEstatePage() {
                 className="text-4xl font-black mb-5"
                 style={{ color: "#0f1b3d" }}
               >
-                شريكك الموثوق
-                <span style={{ color: "#3b6fa0" }}> في العقارات</span>
+                شريكك المثالي
+                <span style={{ color: "#3b6fa0" }}> في المقاولات</span>
               </h2>
               <p
                 className="text-lg leading-relaxed mb-6"
                 style={{ color: "rgba(30,58,95,0.7)" }}
               >
-                نؤمن أن كل عقار يستحق أفضل رعاية واهتمام. لذلك نقدم
-                خدمات تطوير عقاري متكاملة تبدأ من الاستشارة المجانية
-                وحتى التسليم النهائي مع ضمان رضاك التام.
+                نجمع بين الدقة الهندسية والسرعة في التنفيذ والالتزام الأخلاقي
+                بالمعايير لنمنحكم تجربة احترافية تجعل من الهادي الخيار الأول
+                والأكثر موثوقية لمشروعاتكم.
               </p>
 
               {/* quote */}
@@ -394,9 +392,8 @@ export default function RealEstatePage() {
                   className="italic text-sm leading-relaxed"
                   style={{ color: "#1e3a5f" }}
                 >
-                  "نسعى في الهادي جروب إلى أن نكون شريك نجاح حقيقي
-                  لعملائنا، من خلال تقديم أعمال تعكس الاحترافية والثقة
-                  والجودة في كل تفصيلة."
+                  "لأننا لا نكتفي بإنهاء المهمة، بل نعتني بالتفاصيل
+                  التي تضمن استدامتها"
                 </p>
               </div>
 
@@ -405,8 +402,8 @@ export default function RealEstatePage() {
                 className="inline-flex items-center gap-3 font-bold px-7 py-4 rounded-2xl transition-all hover:scale-105 text-white"
                 style={{ backgroundColor: "#0f1b3d" }}
               >
-                <Building2 size={17} />
-                ابدأ معنا الآن
+                <HardHat size={17} />
+                ابدأ مشروعك معنا
                 <ArrowLeft size={15} />
               </Link>
             </div>
@@ -456,10 +453,10 @@ export default function RealEstatePage() {
               className="text-4xl font-black mb-4"
               style={{ color: "#0f1b3d" }}
             >
-              كيف نطور عقارك؟
+              كيف ننفذ مشروعك؟
             </h2>
             <p className="text-lg" style={{ color: "#3b6fa0" }}>
-              من التقييم حتى التسليم — خطوات واضحة وشفافة
+              من الدراسة حتى التسليم — خطوات واضحة وشفافة
             </p>
           </div>
 
@@ -501,16 +498,12 @@ export default function RealEstatePage() {
           <div
             className="relative rounded-3xl p-10 md:p-14 text-center overflow-hidden"
             style={{
-              background:
-                "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 60%, #3b6fa0 100%)",
+              background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 60%, #3b6fa0 100%)",
             }}
           >
             <div
               className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20"
-              style={{
-                backgroundColor: "#3b6fa0",
-                transform: "translate(30%, -40%)",
-              }}
+              style={{ backgroundColor: "#3b6fa0", transform: "translate(30%, -40%)" }}
             />
 
             <div className="relative">
@@ -525,8 +518,11 @@ export default function RealEstatePage() {
                   className="w-1.5 h-1.5 rounded-full animate-pulse"
                   style={{ backgroundColor: "#e8edf3" }}
                 />
-                <span className="text-sm font-bold" style={{ color: "#e8edf3" }}>
-                  استشارة مجانية
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: "#e8edf3" }}
+                >
+                  فريقنا جاهز لمشروعك
                 </span>
               </div>
 
@@ -534,14 +530,14 @@ export default function RealEstatePage() {
                 className="text-4xl font-black mb-4"
                 style={{ color: "#ffffff" }}
               >
-                لديك عقار تريد تطويره؟
+                لديك مشروع مقاولات؟
               </h2>
               <p
                 className="text-lg leading-relaxed max-w-xl mx-auto mb-8"
                 style={{ color: "rgba(232,237,243,0.7)" }}
               >
-                تواصل معنا الآن واحصل على تقييم مجاني لعقارك وخطة
-                تطوير متكاملة بدون أي التزامات
+                تواصل معنا الآن واحصل على دراسة مجانية وعرض سعر فوري
+                لمشروعك بدون أي التزامات
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -550,25 +546,14 @@ export default function RealEstatePage() {
                   className="group flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 shadow-lg text-base"
                   style={{ backgroundColor: "#e8edf3", color: "#0f1b3d" }}
                 >
-                  <Building2 size={18} />
-                  احصل على استشارة مجانية
+                  <HardHat size={18} />
+                  اطلب عرض سعر الآن
                   <ArrowLeft
                     size={16}
                     className="group-hover:-translate-x-1 transition-transform"
                   />
                 </Link>
-                <a
-                  href="tel:+201025686280"
-                  className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
-                  style={{
-                    backgroundColor: "rgba(232,237,243,0.1)",
-                    borderColor: "rgba(232,237,243,0.3)",
-                    color: "#e8edf3",
-                  }}
-                >
-                  <Phone size={18} />
-                  اتصل بنا مباشرة
-                </a>
+               
               </div>
             </div>
           </div>

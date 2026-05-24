@@ -1365,14 +1365,14 @@ export default function RequestServicePage() {
                     )}
                   </button>
 
-                  <a
+                  {/* <a
                     href="tel:+201025686280"
                     className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl border transition-all"
                     style={{ borderColor: "#1e3a5f", color: "#1e3a5f" }}
                   >
                     <Phone size={20} />
                     أو اتصل مباشرة
-                  </a>
+                  </a> */}
                 </div>
 
                 <p

@@ -1,83 +1,90 @@
 import Link from "next/link";
 import {
-  HardHat, Hammer, Building2, ClipboardList,
+  Building2, Home, HandshakeIcon, Key,
   CheckCircle, ArrowLeft, Phone, ChevronLeft,
-  Shield, Clock, Star, Award
+  Shield, Clock, Star, TrendingUp
 } from "lucide-react";
 import Image from "next/image";
 
 const services = [
   {
-    title: "تشطيبات راقية ومبتكرة",
-    desc: "تنفيذ التشطيبات النهائية للوحدات السكنية والتجارية وفق أرقى التصاميم العصرية.",
-    features: ["دهانات وديكورات", "أرضيات وسيراميك", "أسقف مستعارة", "واجهات خارجية"],
-    image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=500&h=350&fit=crop",
+    title: "تطوير الوحدات والفلل",
+    desc: "العمل على تحسين العقارات السكنية ورفع قيمتها السوقية والجمالية بشكل ملموس.",
+    features: ["تطوير فلل سكنية", "تحسين الواجهات", "رفع القيمة السوقية", "تشطيبات عصرية"],
+    image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=500&h=350&fit=crop",
   },
   {
-    title: "إدارة المشاريع الكبرى",
-    desc: "التعاقد على تنفيذ المشاريع الإنشائية وتطوير المباني الحكومية بدقة واحترافية.",
-    features: ["مباني سكنية وتجارية", "مشاريع حكومية", "إشراف هندسي", "ضبط جودة"],
-    image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=500&h=350&fit=crop",
+    title: "الوساطة والتبادل العقاري",
+    desc: "تقديم خدمات احترافية في بيع وشراء العقارات لضمان أفضل الفرص الاستثمارية.",
+    features: ["بيع وشراء عقارات", "تقييم عقاري", "استشارات استثمارية", "أفضل الفرص"],
+    image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&h=350&fit=crop",
   },
+{
+  title: "إنشاء وتطوير المستشفيات",
+  desc: "تصميم وتنفيذ المستشفيات والمراكز الطبية وفق أحدث المعايير الهندسية والطبية الحديثة.",
+  features: [
+    "تصميم مستشفيات حديثة",
+    "مراكز طبية متكاملة",
+    "تنفيذ بمعايير عالمية",
+    "تجهيزات طبية متطورة"
+  ],
+  image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=500&h=350&fit=crop",
+},
   {
-    title: "حلول هندسية متكاملة",
-    desc: "تخطيط دقيق وتمديدات إنشائية تضمن تسليم كافة المشاريع في مواعيدها المحددة.",
-    features: ["تمديدات كهربائية", "بنية تحتية", "أعمال مدنية", "تسليم في الموعد"],
-    image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=500&h=350&fit=crop",
-  },
-  {
-    title: "عقود الشركات والمؤسسات",
-    desc: "عقود صيانة وإنشاء شاملة للشركات والمؤسسات الحكومية والخاصة.",
-    features: ["عقود سنوية", "صيانة دورية", "دعم فني متواصل", "تقارير أداء"],
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&h=350&fit=crop",
+    title: "تطوير المباني التجارية",
+    desc: "تطوير وإنشاء المباني التجارية والإدارية وفق أحدث المعايير الهندسية والتصميمية.",
+    features: ["مباني تجارية وإدارية", "مراكز تجارية", "تصميم معماري", "تنفيذ احترافي"],
+    image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500&h=350&fit=crop",
   },
 ];
 
 const whyUs = [
   {
     icon: Shield,
-    title: "ضمان الجودة",
-    desc: "نلتزم بأعلى معايير الجودة في كل مشروع من البداية حتى التسليم",
+    title: "خبرة موثوقة",
+    desc: "أكثر من 10 سنوات في مجال التطوير العقاري بسجل حافل من المشاريع الناجحة",
   },
   {
-    icon: Clock,
-    title: "الالتزام بالمواعيد",
-    desc: "نسلم مشاريعنا في الوقت المحدد دون أي تأخير",
+    icon: TrendingUp,
+    title: "رفع قيمة العقار",
+    desc: "نضمن رفع القيمة السوقية لعقارك من خلال التطوير الاحترافي المدروس",
   },
   {
     icon: Star,
-    title: "فريق هندسي متخصص",
-    desc: "مهندسون وفنيون ذوو خبرة واسعة في مجال المقاولات",
+    title: "استشارات مجانية",
+    desc: "نقدم استشارات عقارية مجانية لمساعدتك في اتخاذ القرار الصحيح",
   },
   {
-    icon: Award,
-    title: "مواد عالية الجودة",
-    desc: "نستخدم أفضل المواد والخامات لضمان استدامة المشاريع",
+    icon: Clock,
+    title: "إنجاز سريع",
+    desc: "نلتزم بالجداول الزمنية المتفق عليها ونسلم مشاريعنا في الموعد المحدد",
   },
 ];
 
 const stats = [
-  { n: "+200",  l: "مشروع منجز",     icon: "🏗️" },
-  { n: "+50",   l: "عميل شركات",      icon: "🤝" },
-  { n: "10+",   l: "سنوات خبرة",      icon: "⭐" },
-  { n: "100%",  l: "التزام بالجودة",  icon: "✅" },
+  { n: "+150", l: "وحدة مطورة",      icon: "🏠" },
+  { n: "+80",  l: "صفقة عقارية",     icon: "🤝" },
+  { n: "+300", l: "عميل راضٍ",       icon: "😊" },
+  { n: "10+",  l: "سنوات خبرة",      icon: "⭐" },
 ];
 
 const steps = [
-  { n: "01", icon: "📋", title: "دراسة المشروع",   desc: "ندرس متطلبات مشروعك ونضع خطة تنفيذ متكاملة" },
-  { n: "02", icon: "📐", title: "عرض السعر",        desc: "نقدم عرض سعر شفاف ومفصل بدون أي تكاليف خفية" },
-  { n: "03", icon: "🏗️", title: "بدء التنفيذ",     desc: "نبدأ التنفيذ بفريق متخصص مع إشراف هندسي كامل" },
-  { n: "04", icon: "🎯", title: "التسليم والضمان",  desc: "نسلم المشروع في الموعد مع ضمان شامل على الأعمال" },
+  { n: "01", icon: "🔍", title: "تقييم العقار",     desc: "ندرس العقار ونقيّم إمكانياته وفرص تطويره" },
+  { n: "02", icon: "📐", title: "خطة التطوير",      desc: "نضع خطة تطوير شاملة ومدروسة تناسب ميزانيتك" },
+  { n: "03", icon: "🏗️", title: "بدء التنفيذ",     desc: "ننفذ خطة التطوير بفريق متخصص وإشراف كامل" },
+  { n: "04", icon: "🎯", title: "التسليم والمتابعة", desc: "نسلم العقار المطور ونتابع معك حتى تحقيق أهدافك" },
 ];
 
-export default function ContractingPage() {
+export default function RealEstatePage() {
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
 
       {/* ===== Hero ===== */}
       <section
         className="relative py-28 overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 55%, #3b6fa0 100%)" }}
+        style={{
+          background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 55%, #3b6fa0 100%)",
+        }}
       >
         {/* دوائر ضوئية */}
         <div
@@ -104,7 +111,7 @@ export default function ContractingPage() {
               الرئيسية
             </Link>
             <ChevronLeft size={14} />
-            <span style={{ color: "#e8edf3" }}>المقاولات العامة</span>
+            <span style={{ color: "#e8edf3" }}>التطوير العقاري</span>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-14 items-center">
@@ -118,9 +125,9 @@ export default function ContractingPage() {
                   borderColor: "rgba(59,111,160,0.4)",
                 }}
               >
-                <HardHat size={15} style={{ color: "#e8edf3" }} />
+                <Building2 size={15} style={{ color: "#e8edf3" }} />
                 <span className="text-sm font-bold" style={{ color: "#e8edf3" }}>
-                  المقاولات العامة
+                  التطوير العقاري
                 </span>
               </div>
 
@@ -129,31 +136,31 @@ export default function ContractingPage() {
                   className="text-5xl md:text-6xl font-black leading-tight mb-4"
                   style={{ color: "#ffffff" }}
                 >
-                  مقاولات عامة
+                  تطوير عقاري
                   <span
                     className="block mt-1"
                     style={{ color: "rgba(232,237,243,0.8)" }}
                   >
-                    بأعلى معايير الجودة
+                    متكامل واحترافي
                   </span>
                 </h1>
                 <p
                   className="text-lg leading-relaxed max-w-lg"
                   style={{ color: "rgba(232,237,243,0.7)" }}
                 >
-                  تنفيذ مشاريع المقاولات العامة بأحدث الأساليب الهندسية
-                  مع الالتزام بالجودة والدقة وسرعة الإنجاز لتقديم
-                  مشاريع متكاملة تليق بعملائنا.
+                  نقدم حلول تطوير عقاري متكاملة تشمل إنشاء وتطوير
+                  المشاريع السكنية والتجارية بأعلى معايير الجودة
+                  والتصميم الحديث.
                 </p>
               </div>
 
               <div className="space-y-3">
                 {[
-                  "مشاريع سكنية وتجارية",
-                  "تشطيبات متكاملة",
-                  "أعمال كهرباء وبنية تحتية",
-                  "إدارة مواقع ومشاريع",
-                  "تنفيذ وفق المواصفات الحديثة",
+                  "تطوير مشاريع سكنية",
+                  "تطوير مباني تجارية",
+                  "إدارة وتنفيذ المشاريع",
+                  "تشطيبات عصرية",
+                  "استشارات عقارية مجانية",
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
                     <CheckCircle
@@ -176,25 +183,14 @@ export default function ContractingPage() {
                   className="group flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 shadow-lg text-white"
                   style={{ backgroundColor: "#3b6fa0" }}
                 >
-                  <HardHat size={18} />
-                  اطلب عرض سعر
+                  <Building2 size={18} />
+                  استشارة مجانية
                   <ArrowLeft
                     size={16}
                     className="group-hover:-translate-x-1 transition-transform"
                   />
                 </Link>
-                <a
-                  href="tel:+201025686280"
-                  className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
-                  style={{
-                    backgroundColor: "rgba(232,237,243,0.1)",
-                    borderColor: "rgba(232,237,243,0.25)",
-                    color: "#e8edf3",
-                  }}
-                >
-                  <Phone size={18} />
-                  +20 10 2568 6280
-                </a>
+               
               </div>
             </div>
 
@@ -230,7 +226,12 @@ export default function ContractingPage() {
 
         {/* موجة */}
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" className="w-full">
+          <svg
+            viewBox="0 0 1440 60"
+            fill="none"
+            preserveAspectRatio="none"
+            className="w-full"
+          >
             <path
               d="M0 60L1440 60L1440 30C1200 0 960 0 720 15C480 30 240 40 0 30Z"
               fill="#f8fafc"
@@ -248,19 +249,19 @@ export default function ContractingPage() {
               className="inline-block font-bold text-sm px-4 py-2 rounded-full mb-4"
               style={{ backgroundColor: "#e8edf3", color: "#1e3a5f" }}
             >
-              مجالات المقاولات
+              خدماتنا العقارية
             </span>
             <h2
               className="text-4xl font-black mb-4"
               style={{ color: "#0f1b3d" }}
             >
-              خدمات المقاولات الشاملة
+              حلول عقارية متكاملة
             </h2>
             <p
               className="text-lg max-w-xl mx-auto"
               style={{ color: "#3b6fa0" }}
             >
-              نقدم حلول مقاولات متكاملة من الدراسة حتى التسليم
+              من التطوير إلى الإدارة — كل ما يحتاجه عقارك في مكان واحد
             </p>
           </div>
 
@@ -283,14 +284,19 @@ export default function ContractingPage() {
                   <div
                     className="absolute inset-0"
                     style={{
-                      background: "linear-gradient(to top, rgba(15,27,61,0.75) 0%, transparent 60%)",
+                      background:
+                        "linear-gradient(to top, rgba(15,27,61,0.75) 0%, transparent 60%)",
                     }}
                   />
                   <div
                     className="absolute bottom-4 right-4 px-3 py-1.5 rounded-full text-xs font-bold"
-                    style={{ backgroundColor: "rgba(232,237,243,0.15)", color: "#e8edf3", backdropFilter: "blur(8px)" }}
+                    style={{
+                      backgroundColor: "rgba(232,237,243,0.15)",
+                      color: "#e8edf3",
+                      backdropFilter: "blur(8px)",
+                    }}
                   >
-                    مقاولات عامة
+                    تطوير عقاري
                   </div>
                 </div>
 
@@ -309,28 +315,30 @@ export default function ContractingPage() {
                     {s.desc}
                   </p>
 
-                  <ul className="space-y-2 mb-6">
-                    {s.features.map((f, fi) => (
-                      <li
-                        key={fi}
-                        className="flex items-center gap-2.5 text-sm"
-                        style={{ color: "#1e3a5f" }}
-                      >
-                        <div
-                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: "#3b6fa0" }}
-                        />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
+                  {s.features && s.features.length > 0 && (
+                    <ul className="space-y-2 mb-6">
+                      {s.features.map((f, fi) => (
+                        <li
+                          key={fi}
+                          className="flex items-center gap-2.5 text-sm"
+                          style={{ color: "#1e3a5f" }}
+                        >
+                          <div
+                            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: "#3b6fa0" }}
+                          />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
 
                   <Link
                     href="/request-service"
                     className="flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all"
                     style={{ color: "#3b6fa0" }}
                   >
-                    اطلب عرض سعر
+                    اطلب استشارة
                     <ArrowLeft size={15} />
                   </Link>
                 </div>
@@ -358,16 +366,16 @@ export default function ContractingPage() {
                 className="text-4xl font-black mb-5"
                 style={{ color: "#0f1b3d" }}
               >
-                شريكك المثالي
-                <span style={{ color: "#3b6fa0" }}> في المقاولات</span>
+                شريكك الموثوق
+                <span style={{ color: "#3b6fa0" }}> في العقارات</span>
               </h2>
               <p
                 className="text-lg leading-relaxed mb-6"
                 style={{ color: "rgba(30,58,95,0.7)" }}
               >
-                نجمع بين الدقة الهندسية والسرعة في التنفيذ والالتزام الأخلاقي
-                بالمعايير لنمنحكم تجربة احترافية تجعل من الهادي الخيار الأول
-                والأكثر موثوقية لمشروعاتكم.
+                نؤمن أن كل عقار يستحق أفضل رعاية واهتمام. لذلك نقدم
+                خدمات تطوير عقاري متكاملة تبدأ من الاستشارة المجانية
+                وحتى التسليم النهائي مع ضمان رضاك التام.
               </p>
 
               {/* quote */}
@@ -382,8 +390,9 @@ export default function ContractingPage() {
                   className="italic text-sm leading-relaxed"
                   style={{ color: "#1e3a5f" }}
                 >
-                  "لأننا لا نكتفي بإنهاء المهمة، بل نعتني بالتفاصيل
-                  التي تضمن استدامتها"
+                  "نسعى في الهادي جروب إلى أن نكون شريك نجاح حقيقي
+                  لعملائنا، من خلال تقديم أعمال تعكس الاحترافية والثقة
+                  والجودة في كل تفصيلة."
                 </p>
               </div>
 
@@ -392,8 +401,8 @@ export default function ContractingPage() {
                 className="inline-flex items-center gap-3 font-bold px-7 py-4 rounded-2xl transition-all hover:scale-105 text-white"
                 style={{ backgroundColor: "#0f1b3d" }}
               >
-                <HardHat size={17} />
-                ابدأ مشروعك معنا
+                <Building2 size={17} />
+                ابدأ معنا الآن
                 <ArrowLeft size={15} />
               </Link>
             </div>
@@ -443,10 +452,10 @@ export default function ContractingPage() {
               className="text-4xl font-black mb-4"
               style={{ color: "#0f1b3d" }}
             >
-              كيف ننفذ مشروعك؟
+              كيف نطور عقارك؟
             </h2>
             <p className="text-lg" style={{ color: "#3b6fa0" }}>
-              من الدراسة حتى التسليم — خطوات واضحة وشفافة
+              من التقييم حتى التسليم — خطوات واضحة وشفافة
             </p>
           </div>
 
@@ -488,12 +497,16 @@ export default function ContractingPage() {
           <div
             className="relative rounded-3xl p-10 md:p-14 text-center overflow-hidden"
             style={{
-              background: "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 60%, #3b6fa0 100%)",
+              background:
+                "linear-gradient(135deg, #0f1b3d 0%, #1e3a5f 60%, #3b6fa0 100%)",
             }}
           >
             <div
               className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-20"
-              style={{ backgroundColor: "#3b6fa0", transform: "translate(30%, -40%)" }}
+              style={{
+                backgroundColor: "#3b6fa0",
+                transform: "translate(30%, -40%)",
+              }}
             />
 
             <div className="relative">
@@ -508,11 +521,8 @@ export default function ContractingPage() {
                   className="w-1.5 h-1.5 rounded-full animate-pulse"
                   style={{ backgroundColor: "#e8edf3" }}
                 />
-                <span
-                  className="text-sm font-bold"
-                  style={{ color: "#e8edf3" }}
-                >
-                  فريقنا جاهز لمشروعك
+                <span className="text-sm font-bold" style={{ color: "#e8edf3" }}>
+                  استشارة مجانية
                 </span>
               </div>
 
@@ -520,14 +530,14 @@ export default function ContractingPage() {
                 className="text-4xl font-black mb-4"
                 style={{ color: "#ffffff" }}
               >
-                لديك مشروع مقاولات؟
+                لديك عقار تريد تطويره؟
               </h2>
               <p
                 className="text-lg leading-relaxed max-w-xl mx-auto mb-8"
                 style={{ color: "rgba(232,237,243,0.7)" }}
               >
-                تواصل معنا الآن واحصل على دراسة مجانية وعرض سعر فوري
-                لمشروعك بدون أي التزامات
+                تواصل معنا الآن واحصل على تقييم مجاني لعقارك وخطة
+                تطوير متكاملة بدون أي التزامات
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -536,25 +546,14 @@ export default function ContractingPage() {
                   className="group flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 shadow-lg text-base"
                   style={{ backgroundColor: "#e8edf3", color: "#0f1b3d" }}
                 >
-                  <HardHat size={18} />
-                  اطلب عرض سعر الآن
+                  <Building2 size={18} />
+                  احصل على استشارة مجانية
                   <ArrowLeft
                     size={16}
                     className="group-hover:-translate-x-1 transition-transform"
                   />
                 </Link>
-                <a
-                  href="tel:+201025686280"
-                  className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
-                  style={{
-                    backgroundColor: "rgba(232,237,243,0.1)",
-                    borderColor: "rgba(232,237,243,0.3)",
-                    color: "#e8edf3",
-                  }}
-                >
-                  <Phone size={18} />
-                  اتصل بنا مباشرة
-                </a>
+             
               </div>
             </div>
           </div>
