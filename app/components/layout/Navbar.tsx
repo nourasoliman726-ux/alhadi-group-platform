@@ -87,6 +87,12 @@ export default function Navbar() {
             >
               اطلب خدمة
             </Link>
+            <Link 
+              href="/dashboard/technician" 
+              className="hidden md:inline-flex items-center gap-2 bg-[#3b6fa0] hover:bg-[#1e3a5f] text-white px-6 py-3 rounded-lg font-bold transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+             دخول فنين
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
