@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+  import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import {
   Phone, Mail, MapPin, Clock, Send,
@@ -20,10 +21,41 @@ export default function ContactPage() {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setSubmitting(true);
+
+  try {
+    const { error } = await supabase
+      .from('contact_messages')
+      .insert([
+        {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email || null,
+          subject: formData.subject || null,
+          message: formData.message,
+        },
+      ]);
+
+    if (error) throw error;
+
     setSubmitted(true);
-  };
+  } catch (error) {
+    console.error('Error submitting message:', error);
+    alert('حدث خطأ في إرسال الرسالة. الرجاء المحاولة مرة أخرى.');
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+const [submitting, setSubmitting] = useState(false);
+
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setSubmitted(true);
+  // };
 
   const isFormValid =
     formData.name !== "" &&

@@ -172,13 +172,13 @@ export default function Footer() {
               >
                 <BoldIcon size={20} />
               </a>
-              <a
+              {/* <a
                 href="tel:+201025686280"
                 className="w-10 h-10 bg-brand-dark hover:bg-accent-gold rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
                 aria-label="اتصل بنا"
               >
                 <Phone size={20} />
-              </a>
+              </a> */}
               <a
                 href="mailto:alhadigroup1998@gmail.com"
                 className="w-10 h-10 bg-brand-dark hover:bg-accent-gold rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110"
@@ -228,10 +228,10 @@ export default function Footer() {
             <h4 className="text-lg font-bold mb-6 text-accent-gold">تواصل معنا</h4>
             <ul className="space-y-4">
               <li>
-                <a href="tel:+201025686280" className="flex items-start gap-3 text-gray-400 hover:text-white transition-colors group">
+                {/* <a href="tel:+201025686280" className="flex items-start gap-3 text-gray-400 hover:text-white transition-colors group">
                   <Phone className="flex-shrink-0 mt-1 group-hover:text-accent-gold transition-colors" size={20} />
                   <span dir="ltr">+20 10 2568 6280</span>
-                </a>
+                </a> */}
               </li>
               <li>
                 <a href="mailto:alhadigroup1998@gmail.com" className="flex items-start gap-3 text-gray-400 hover:text-white transition-colors group">

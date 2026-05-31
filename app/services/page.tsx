@@ -132,7 +132,7 @@ export default function ServicesPage() {
               >
                 <Wrench size={15} style={{ color: "#e8edf3" }} />
                 <span className="text-sm font-bold" style={{ color: "#e8edf3" }}>
-                  الصيانة الفنية الاحترافية
+             فنى خدمات صيانة ذاتيه
                 </span>
               </div>
 

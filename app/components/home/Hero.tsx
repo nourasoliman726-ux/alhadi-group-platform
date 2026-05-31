@@ -6,19 +6,19 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 const slides = [
-  {
-    image:"https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=1400",
-    alt: "فني كهرباء محترف"
-  },
+  // {
+  //   image:"https://images.unsplash.com/photo-1557597774-9d273605dfa9?q=80&w=1400",
+  //   alt: "فني كهرباء محترف"
+  // },
   {
     image:"https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=1400",
     alt: "مشروع تشطيبات فاخر"
   },
-  {
-    image:"https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1400"
-,
-    alt: "أعمال تكييف وصيانة"
-  }
+//   {
+//     image:"https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1400"
+// ,
+//     alt: "أعمال تكييف وصيانة"
+//   }
 ];
 
 export default function Hero() {
@@ -83,10 +83,10 @@ export default function Hero() {
               </span>
             </h1>
 
-            <p className="text-xl text-[#e8edf3]/90 max-w-lg">
+            {/* <p className="text-xl text-[#e8edf3]/90 max-w-lg">
               حلول كهربائية وتشطيبات متكاملة بأعلى معايير الجودة والأمان.
               <span className="block mt-2 font-medium">خدمة سريعة 24/7 في الإسكندرية</span>
-            </p>
+            </p> */}
 
             {/* Features */}
             <div className="grid sm:grid-cols-2 gap-4">

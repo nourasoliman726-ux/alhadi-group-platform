@@ -193,7 +193,7 @@ export default function ContractingPage() {
                     className="group-hover:-translate-x-1 transition-transform"
                   />
                 </Link>
-                <a
+                {/* <a
                   href="tel:+201025686280"
                   className="flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border text-base"
                   style={{
@@ -204,7 +204,7 @@ export default function ContractingPage() {
                 >
                   <Phone size={18} />
                   +20 10 2568 6280
-                </a>
+                </a> */}
               </div>
             </div>
 
