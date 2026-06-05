@@ -109,7 +109,7 @@ export default function SignupPage() {
       );
       
      
-      router.push('dashboard/technician');
+      router.push('/dashboard/technician');
     } catch (err: any) {
       setError(err.message || 'فشل التسجيل. حاول مرة أخرى');
     } finally {
