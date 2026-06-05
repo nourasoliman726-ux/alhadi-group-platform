@@ -18,7 +18,10 @@ export async function signUpWithRole(
   email: string,
   password: string,
   role: UserRole,
-  fullName: string
+  fullName: string,
+  phone?: string,
+  specialty?: string,
+  city?: string
 ) {
   // 1. إنشاء المستخدم
   const { data: authData, error: authError } = await supabase.auth.signUp({
@@ -46,9 +49,9 @@ export async function signUpWithRole(
         {
           full_name: fullName,
           email,
-          phone: '', // يتم تحديثها لاحقاً
-          specialty: '',
-          city: '',
+          phone: phone || '',
+          specialty: specialty || '',
+          city: city || '',
           user_id: userId,
         },
       ]);

@@ -187,7 +187,7 @@ export default function ContractingPage() {
                   style={{ backgroundColor: "#3b6fa0" }}
                 >
                   <HardHat size={18} />
-                  اطلب عرض سعر
+              اطلب خدمتك الآن
                   <ArrowLeft
                     size={16}
                     className="group-hover:-translate-x-1 transition-transform"
@@ -340,7 +340,7 @@ export default function ContractingPage() {
                     className="flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all"
                     style={{ color: "#3b6fa0" }}
                   >
-                    اطلب عرض سعر
+                 اطلب خدمتك الآن
                     <ArrowLeft size={15} />
                   </Link>
                 </div>
