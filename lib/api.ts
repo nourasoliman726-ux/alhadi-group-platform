@@ -2,13 +2,14 @@ import { supabase } from './supabase';
 
 // ===== الطلبات =====
 
-// الحصول على كل الطلبات (للإدارة)
+// الحصول على كل الطلبات (للإدارة) - مع الصور
 export async function getAllRequests() {
   const { data, error } = await supabase
     .from('service_requests')
     .select(`
       *,
-      technician:technicians(full_name, phone, specialty, rating)
+      technician:technicians(id, full_name, phone, specialty, rating),
+      images:request_images(id, image_url, uploaded_at)
     `)
     .order('created_at', { ascending: false });
 
@@ -16,11 +17,14 @@ export async function getAllRequests() {
   return data;
 }
 
-// الحصول على طلبات الفني
+// الحصول على طلبات الفني - مع الصور
 export async function getTechnicianRequests(technicianId: string) {
   const { data, error } = await supabase
     .from('service_requests')
-    .select('*')
+    .select(`
+      *,
+      images:request_images(id, image_url, uploaded_at)
+    `)
     .eq('technician_id', technicianId)
     .order('created_at', { ascending: false });
 
@@ -28,14 +32,14 @@ export async function getTechnicianRequests(technicianId: string) {
   return data;
 }
 
-// الحصول على طلب واحد
+// الحصول على طلب واحد - مع الصور
 export async function getRequest(requestId: string) {
   const { data, error } = await supabase
     .from('service_requests')
     .select(`
       *,
-      images:request_images(image_url),
-      technician:technicians(full_name, phone, rating)
+      images:request_images(id, image_url, uploaded_at),
+      technician:technicians(id, full_name, phone, rating, specialty)
     `)
     .eq('id', requestId)
     .single();
@@ -218,4 +222,68 @@ export async function getRequestImages(requestId: string) {
 
   if (error) throw error;
   return data;
+}
+
+// رفع صورة جديدة لطلب موجود
+export async function uploadRequestImage(requestId: string, file: File) {
+  try {
+    // رفع الصورة إلى Storage
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `${requestId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('service-images')
+      .upload(fileName, file);
+
+    if (uploadError) throw uploadError;
+
+    // الحصول على رابط الصورة
+    const { data: urlData } = supabase.storage
+      .from('service-images')
+      .getPublicUrl(fileName);
+
+    // إضافة السجل في جدول request_images
+    const { data, error: dbError } = await supabase
+      .from('request_images')
+      .insert([
+        {
+          request_id: requestId,
+          image_url: urlData.publicUrl,
+        },
+      ])
+      .select()
+      .single();
+
+    if (dbError) throw dbError;
+    return data;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+}
+
+// حذف صورة
+export async function deleteRequestImage(imageId: string, imageUrl: string) {
+  try {
+    // استخراج اسم الملف من الرابط
+    const fileName = imageUrl.split('/service-images/')[1];
+    
+    // حذف من Storage
+    const { error: storageError } = await supabase.storage
+      .from('service-images')
+      .remove([fileName]);
+
+    if (storageError) throw storageError;
+
+    // حذف من قاعدة البيانات
+    const { error: dbError } = await supabase
+      .from('request_images')
+      .delete()
+      .eq('id', imageId);
+
+    if (dbError) throw dbError;
+  } catch (error) {
+    console.error('Error deleting image:', error);
+    throw error;
+  }
 }

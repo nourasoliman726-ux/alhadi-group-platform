@@ -59,7 +59,7 @@ export default function TechnicianDashboard() {
   const [note, setNote] = useState("");
   const [loadingAction, setLoadingAction] = useState("");
 
-  // تحميل البيانات
+
   useEffect(() => {
     const loadData = async () => {
       try {

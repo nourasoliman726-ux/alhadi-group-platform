@@ -7,7 +7,8 @@ import {
   Users, LogOut, Bell, Settings, Search,
   Wrench, TrendingUp, Eye, Phone, MapPin,
   ChevronLeft, Mail, Filter,
-  BarChart2, MessageSquare, UserPlus, X, Loader2
+  BarChart2, MessageSquare, UserPlus, X, Loader2,
+  ExternalLink
 } from 'lucide-react';
 import {
   getAllRequests,
@@ -32,41 +33,40 @@ const statusConfig = {
 const urgencyConfig = {
   urgent:    { label: "عاجل",  color: "#ef4444", bg: "#fee2e2" },
   normal:    { label: "عادي",  color: "#3b6fa0", bg: "#e8edf3" },
-  scheduled: { label: "مجدول",color: "#10b981", bg: "#d1fae5" },
+  scheduled: { label: "مجدول", color: "#10b981", bg: "#d1fae5" },
 };
 
 const categoryLabels: Record<string, string> = {
-  electricity: "كهرباء",
-  cameras:     "كاميرات",
-  data:        "اتصالات",
+  electrical: "كهرباء",
+  cameras: "كاميرات",
+  data: "اتصالات",
   maintenance: "صيانة",
   contracting: "مقاولات",
-  realestate:  "عقاري",
+  "real-estate": "عقاري",
 };
 
-type Request   = any;
-type Message   = any;
+type Request = any;
+type Message = any;
 type Technician = any;
 type ActiveSection = "dashboard" | "requests" | "technicians" | "messages" | "settings";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [isLoading, setIsLoading]           = useState(true);
-  const [activeSection, setActiveSection]   = useState<ActiveSection>("dashboard");
-  const [sidebarOpen, setSidebarOpen]       = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState<ActiveSection>("dashboard");
 
-  const [requests,     setRequests]     = useState<Request[]>([]);
-  const [technicians,  setTechnicians]  = useState<Technician[]>([]);
-  const [messages,     setMessages]     = useState<Message[]>([]);
-  const [stats,        setStats]        = useState({ total: 0, pending: 0, in_progress: 0, completed: 0, assigned: 0 });
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [technicians, setTechnicians] = useState<Technician[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [stats, setStats] = useState({ total: 0, pending: 0, in_progress: 0, completed: 0, assigned: 0 });
 
-  const [selectedReq,      setSelectedReq]      = useState<Request | null>(null);
-  const [selectedMsg,      setSelectedMsg]       = useState<Message | null>(null);
-  const [searchQuery,      setSearchQuery]       = useState("");
-  const [statusFilter,     setStatusFilter]      = useState("all");
-  const [showAssignModal,  setShowAssignModal]   = useState(false);
-  const [assignReqId,      setAssignReqId]       = useState("");
-  const [loadingAction,    setLoadingAction]     = useState("");
+  const [selectedReq, setSelectedReq] = useState<Request | null>(null);
+  const [selectedMsg, setSelectedMsg] = useState<Message | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [assignReqId, setAssignReqId] = useState("");
+  const [loadingAction, setLoadingAction] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -78,9 +78,9 @@ export default function AdminDashboard() {
           getMessages(),
           getDashboardStats(),
         ]);
-        setRequests(reqData   || []);
+        setRequests(reqData || []);
         setTechnicians(techData || []);
-        setMessages(msgData   || []);
+        setMessages(msgData || []);
         setStats(statsData);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -96,8 +96,8 @@ export default function AdminDashboard() {
     try {
       setLoadingAction(`status-${id}`);
       await updateRequestStatus(id, status);
-      setRequests((prev: any[]) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
-      setSelectedReq((prev: any) => (prev?.id === id ? { ...prev, status } : prev));
+      setRequests((prev) => prev.map((r) => (r.id === id ? { ...r, status } : r)));
+      setSelectedReq((prev: { id: string; }) => (prev?.id === id ? { ...prev, status } : prev));
     } catch (error: any) {
       alert(`خطأ: ${error?.message || 'حدث خطأ في تحديث الحالة'}`);
     } finally {
@@ -109,11 +109,11 @@ export default function AdminDashboard() {
     try {
       setLoadingAction(`assign-${reqId}`);
       await assignRequestToTechnician(reqId, techId);
-      setRequests((prev: any[]) =>
+      setRequests((prev) =>
         prev.map((r) => r.id === reqId ? { ...r, technician_id: techId, status: "assigned" } : r)
       );
       setShowAssignModal(false);
-      setSelectedReq((prev: any) =>
+      setSelectedReq((prev: { id: string; }) =>
         prev?.id === reqId ? { ...prev, technician_id: techId, status: "assigned" } : prev
       );
     } catch (error: any) {
@@ -126,7 +126,7 @@ export default function AdminDashboard() {
   const handleMarkAsRead = async (id: string) => {
     try {
       await markMessageAsRead(id);
-      setMessages((prev: any[]) => prev.map((m) => (m.id === id ? { ...m, is_read: true } : m)));
+      setMessages((prev) => prev.map((m) => (m.id === id ? { ...m, is_read: true } : m)));
     } catch (error) {
       console.error('Error marking message as read:', error);
     }
@@ -151,11 +151,10 @@ export default function AdminDashboard() {
   });
 
   const navItems = [
-    { id: "dashboard",   label: "الرئيسية",  icon: BarChart2,     badge: 0 },
-    { id: "requests",    label: "الطلبات",    icon: ClipboardList, badge: stats.pending },
-    { id: "technicians", label: "الفنيون",    icon: Users,          badge: 0 },
-    { id: "messages",    label: "الرسائل",    icon: MessageSquare,  badge: messages.filter(m => !m.is_read).length },
-    { id: "settings",    label: "الإعدادات",  icon: Settings,       badge: 0 },
+    { id: "dashboard", label: "الرئيسية", icon: BarChart2, badge: 0 },
+    { id: "requests", label: "الطلبات", icon: ClipboardList, badge: stats.pending },
+    { id: "technicians", label: "الفنيون", icon: Users, badge: 0 },
+    { id: "messages", label: "الرسائل", icon: MessageSquare, badge: messages.filter(m => !m.is_read).length },
   ];
 
   const unreadCount = stats.pending + messages.filter(m => !m.is_read).length;
@@ -174,12 +173,11 @@ export default function AdminDashboard() {
     <ProtectedRoute requiredRole="admin">
       <div className="min-h-screen flex flex-col md:flex-row" style={{ backgroundColor: "#f8fafc" }}>
 
-        {/* ===== Sidebar — Desktop only ===== */}
+        {/* ===== Sidebar Desktop ===== */}
         <aside
           className="hidden md:flex w-60 lg:w-64 min-h-screen flex-col sticky top-0 h-screen border-l overflow-y-auto flex-shrink-0"
           style={{ backgroundColor: "white", borderColor: "#e8edf3" }}
         >
-          {/* Logo */}
           <div className="p-5 border-b flex-shrink-0" style={{ borderColor: "#e8edf3" }}>
             <div className="flex items-center gap-3">
               <div
@@ -195,7 +193,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Nav */}
           <nav className="flex-1 p-3 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -228,7 +225,6 @@ export default function AdminDashboard() {
             })}
           </nav>
 
-          {/* Logout */}
           <div className="p-4 border-t flex-shrink-0" style={{ borderColor: "#e8edf3" }}>
             <button
               onClick={handleLogout}
@@ -241,15 +237,12 @@ export default function AdminDashboard() {
           </div>
         </aside>
 
-        {/* ===== Main ===== */}
+        {/* ===== Main Content ===== */}
         <main className="flex-1 overflow-auto pb-20 md:pb-0">
-
-          {/* Top Header */}
           <header
             className="sticky top-0 z-30 px-4 md:px-6 h-14 md:h-16 flex items-center justify-between border-b"
             style={{ backgroundColor: "white", borderColor: "#e8edf3" }}
           >
-            {/* Logo mobile */}
             <div className="flex items-center gap-2 md:hidden">
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
@@ -261,14 +254,13 @@ export default function AdminDashboard() {
             </div>
 
             <h1 className="font-black text-base md:text-lg hidden md:block" style={{ color: "#0f1b3d" }}>
-              {activeSection === "dashboard"   && "لوحة التحكم"}
-              {activeSection === "requests"    && "إدارة الطلبات"}
+              {activeSection === "dashboard" && "لوحة التحكم"}
+              {activeSection === "requests" && "إدارة الطلبات"}
               {activeSection === "technicians" && "إدارة الفنيين"}
-              {activeSection === "messages"    && "الرسائل"}
-              {activeSection === "settings"    && "الإعدادات"}
+              {activeSection === "messages" && "الرسائل"}
+              {activeSection === "settings" && "الإعدادات"}
             </h1>
 
-            {/* Bell + logout mobile */}
             <div className="flex items-center gap-2">
               <div className="relative">
                 <button
@@ -296,28 +288,26 @@ export default function AdminDashboard() {
             </div>
           </header>
 
-          {/* Page title mobile */}
           <div className="md:hidden px-4 pt-4 pb-1">
             <h1 className="font-black text-lg" style={{ color: "#0f1b3d" }}>
-              {activeSection === "dashboard"   && "لوحة التحكم"}
-              {activeSection === "requests"    && "إدارة الطلبات"}
+              {activeSection === "dashboard" && "لوحة التحكم"}
+              {activeSection === "requests" && "إدارة الطلبات"}
               {activeSection === "technicians" && "إدارة الفنيين"}
-              {activeSection === "messages"    && "الرسائل"}
-              {activeSection === "settings"    && "الإعدادات"}
+              {activeSection === "messages" && "الرسائل"}
+              {activeSection === "settings" && "الإعدادات"}
             </h1>
           </div>
 
           <div className="p-4 md:p-6">
-
             {/* ===== Dashboard ===== */}
             {activeSection === "dashboard" && (
               <div className="space-y-5">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                   {[
-                    { label: "إجمالي الطلبات", value: stats.total,       icon: ClipboardList, color: "#1e3a5f", bg: "#e8edf3" },
-                    { label: "قيد الانتظار",   value: stats.pending,     icon: Clock,         color: "#f59e0b", bg: "#fef3c7" },
-                    { label: "قيد التنفيذ",    value: stats.in_progress, icon: Wrench,        color: "#8b5cf6", bg: "#ede9fe" },
-                    { label: "مكتملة",         value: stats.completed,   icon: CheckCircle,   color: "#10b981", bg: "#d1fae5" },
+                    { label: "إجمالي الطلبات", value: stats.total, icon: ClipboardList, color: "#1e3a5f", bg: "#e8edf3" },
+                    { label: "قيد الانتظار", value: stats.pending, icon: Clock, color: "#f59e0b", bg: "#fef3c7" },
+                    { label: "قيد التنفيذ", value: stats.in_progress, icon: Wrench, color: "#8b5cf6", bg: "#ede9fe" },
+                    { label: "مكتملة", value: stats.completed, icon: CheckCircle, color: "#10b981", bg: "#d1fae5" },
                   ].map((s, i) => {
                     const Icon = s.icon;
                     return (
@@ -335,7 +325,6 @@ export default function AdminDashboard() {
                   })}
                 </div>
 
-                {/* آخر الطلبات */}
                 <div className="bg-white rounded-2xl border" style={{ borderColor: "#e8edf3" }}>
                   <div className="flex items-center justify-between p-4 md:p-5 border-b" style={{ borderColor: "#e8edf3" }}>
                     <h3 className="font-black text-sm md:text-base" style={{ color: "#0f1b3d" }}>آخر الطلبات</h3>
@@ -383,7 +372,6 @@ export default function AdminDashboard() {
             {/* ===== الطلبات ===== */}
             {activeSection === "requests" && (
               <div className="space-y-4">
-                {/* بحث وفلترة */}
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Search size={14} className="absolute top-1/2 right-3 -translate-y-1/2" style={{ color: "rgba(30,58,95,0.4)" }} />
@@ -411,7 +399,6 @@ export default function AdminDashboard() {
                   </select>
                 </div>
 
-                {/* على الموبايل: قائمة + تفاصيل تحتها / على الديسكتوب: جنب بعض */}
                 <div className="grid lg:grid-cols-3 gap-4">
                   <div className="lg:col-span-2">
                     <div className="bg-white rounded-2xl border overflow-hidden" style={{ borderColor: "#e8edf3" }}>
@@ -423,7 +410,7 @@ export default function AdminDashboard() {
                           </div>
                         ) : (
                           filteredRequests.map((req) => {
-                            const status  = statusConfig[req.status as keyof typeof statusConfig];
+                            const status = statusConfig[req.status as keyof typeof statusConfig];
                             const urgency = urgencyConfig[req.urgency as keyof typeof urgencyConfig];
                             const StatusIcon = status.icon;
                             return (
@@ -440,7 +427,11 @@ export default function AdminDashboard() {
                                   <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                                       <span className="font-black text-sm" style={{ color: "#0f1b3d" }}>{req.customer_name}</span>
-                                      <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: urgency.bg, color: urgency.color }}>{urgency.label}</span>
+                                      {req.urgency && (
+                                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: urgency?.bg, color: urgency?.color }}>
+                                          {urgency?.label}
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="text-xs font-semibold mb-1" style={{ color: "#3b6fa0" }}>
                                       {categoryLabels[req.service_category] || req.service_category}
@@ -456,7 +447,6 @@ export default function AdminDashboard() {
                                   </div>
                                 </div>
 
-                                {/* تفاصيل مضمنة على الموبايل لما يتحدد */}
                                 {selectedReq?.id === req.id && (
                                   <div className="lg:hidden mt-4 pt-4 border-t space-y-3" style={{ borderColor: "#e8edf3" }}>
                                     <RequestDetails
@@ -478,7 +468,6 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* تفاصيل على الديسكتوب */}
                   <div className="hidden lg:block">
                     {selectedReq ? (
                       <div className="bg-white rounded-2xl border sticky top-20" style={{ borderColor: "#e8edf3" }}>
@@ -594,7 +583,7 @@ export default function AdminDashboard() {
                     <div className="space-y-4">
                       {[
                         { icon: Users, label: "المرسل", value: selectedMsg.name },
-                        { icon: Phone, label: "الهاتف",  value: selectedMsg.phone },
+                        { icon: Phone, label: "الهاتف", value: selectedMsg.phone },
                       ].map(({ icon: Icon, label, value }, i) => (
                         <div key={i} className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#e8edf3" }}>
@@ -637,8 +626,8 @@ export default function AdminDashboard() {
                   <div className="space-y-4">
                     {[
                       { label: "اسم الشركة", value: "الهادي جروب" },
-                      { label: "الهاتف",      value: "+20 10 2568 6280" },
-                      { label: "البريد",      value: "alhadigroup1998@gmail.com" },
+                      { label: "الهاتف", value: "+20 10 2568 6280" },
+                      { label: "البريد", value: "alhadigroup1998@gmail.com" },
                     ].map((field, i) => (
                       <div key={i}>
                         <label className="block text-sm font-bold mb-2" style={{ color: "#1e3a5f" }}>{field.label}</label>
@@ -649,11 +638,10 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
-
           </div>
         </main>
 
-        {/* ===== Bottom Nav — Mobile only ===== */}
+        {/* ===== Bottom Navigation Mobile ===== */}
         <nav
           className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t flex items-center"
           style={{ backgroundColor: "white", borderColor: "#e8edf3", height: "60px" }}
@@ -689,13 +677,17 @@ export default function AdminDashboard() {
           })}
         </nav>
 
-        {/* ===== Modal إسناد الفني ===== */}
+        {/* ===== Assign Modal ===== */}
         {showAssignModal && (
           <div
             className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6"
             style={{ backgroundColor: "rgba(15,27,61,0.5)", backdropFilter: "blur(4px)" }}
+            onClick={() => setShowAssignModal(false)}
           >
-            <div className="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full sm:max-w-md shadow-2xl">
+            <div
+              className="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full sm:max-w-md shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center justify-between mb-5">
                 <h3 className="font-black text-lg" style={{ color: "#0f1b3d" }}>اختر الفني المناسب</h3>
                 <button onClick={() => setShowAssignModal(false)} className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#e8edf3" }}>
@@ -734,7 +726,7 @@ export default function AdminDashboard() {
   );
 }
 
-// ===== مكوّن تفاصيل الطلب (مشترك بين موبايل وديسكتوب) =====
+// ===== Request Details Component =====
 function RequestDetails({
   req,
   technicians,
@@ -752,8 +744,13 @@ function RequestDetails({
   onClose: () => void;
   inline?: boolean;
 }) {
-  const status  = statusConfig[req.status as keyof typeof statusConfig];
+  const status = statusConfig[req.status as keyof typeof statusConfig];
   const StatusIcon = status.icon;
+
+  // استخراج الإحداثيات
+  const coords = req.location_coords ? req.location_coords.split(',') : null;
+  const latitude = coords?.[0];
+  const longitude = coords?.[1];
 
   return (
     <div className="space-y-4">
@@ -765,42 +762,128 @@ function RequestDetails({
 
       {/* بيانات العميل */}
       <div>
-        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>بيانات العميل</h4>
+        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+          بيانات العميل
+        </h4>
         <div className="space-y-2">
           {[
-            { icon: Users,  label: "الاسم",   value: req.customer_name },
-            { icon: Phone,  label: "الهاتف",  value: req.customer_phone },
-            { icon: MapPin, label: "العنوان", value: `${req.customer_address}، ${req.customer_city}` },
+            { icon: Users, label: "الاسم", value: req.customer_name },
+            { icon: Phone, label: "الهاتف", value: req.customer_phone },
+            { icon: MapPin, label: "المدينة", value: req.customer_city },
+            { icon: MapPin, label: "العنوان", value: req.customer_address },
           ].map(({ icon: Icon, label, value }, i) => (
             <div key={i} className="flex items-start gap-3">
               <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#e8edf3" }}>
                 <Icon size={13} style={{ color: "#1e3a5f" }} />
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="text-xs" style={{ color: "rgba(30,58,95,0.5)" }}>{label}</div>
-                <div className="text-sm font-bold" style={{ color: "#0f1b3d" }}>{value}</div>
+                <div className="text-sm font-bold" style={{ color: "#0f1b3d" }}>{value || "—"}</div>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* الوصف */}
+      {/* الموقع الجغرافي */}
+      {(req.location_link || latitude) && (
+        <div>
+          <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+            الموقع الجغرافي
+          </h4>
+
+          {/* الإحداثيات */}
+          {latitude && longitude && (
+            <div className="mb-2 p-3 rounded-xl flex items-center gap-2" style={{ backgroundColor: "#f0f9ff", border: "1px solid #e0f2fe" }}>
+              <MapPin size={14} style={{ color: "#0284c7" }} />
+              <span className="text-xs font-mono" style={{ color: "#0369a1" }}>
+                {parseFloat(latitude).toFixed(6)}°N، {parseFloat(longitude).toFixed(6)}°E
+              </span>
+            </div>
+          )}
+
+          {/* رابط الخريطة */}
+          {req.location_link && (
+            <a
+              href={req.location_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl text-sm border transition-all hover:shadow-md"
+              style={{ borderColor: "#10b981", color: "#059669", backgroundColor: "rgba(16,185,129,0.05)" }}
+            >
+              <ExternalLink size={15} />
+              عرض الموقع على Google Maps
+            </a>
+          )}
+        </div>
+      )}
+
+      {/* نوع الخدمة */}
       <div>
-        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>وصف المشكلة</h4>
-        <p className="text-sm leading-relaxed p-3 rounded-xl" style={{ backgroundColor: "#f8fafc", color: "rgba(30,58,95,0.8)" }}>{req.description}</p>
+        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+          نوع الخدمة
+        </h4>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ backgroundColor: "#e8edf3", color: "#1e3a5f" }}>
+            {categoryLabels[req.service_category] || req.service_category}
+          </span>
+        </div>
       </div>
 
-      {/* الفني */}
+      {/* الوصف */}
       <div>
-        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>الفني المسند</h4>
+        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+          وصف المشكلة
+        </h4>
+        <p className="text-sm leading-relaxed p-3 rounded-xl" style={{ backgroundColor: "#f8fafc", color: "rgba(30,58,95,0.8)" }}>
+          {req.description || "—"}
+        </p>
+      </div>
+
+      {/* الصور المرفقة */}
+      {req.images && req.images.length > 0 && (
+        <div>
+          <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+            الصور المرفقة ({req.images.length})
+          </h4>
+          <div className="grid grid-cols-2 gap-2">
+            {req.images.map((img: any, index: number) => (
+              <a
+                key={img.id}
+                href={img.image_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative group rounded-xl overflow-hidden border aspect-square hover:shadow-lg transition-all"
+                style={{ borderColor: "#e8edf3" }}
+              >
+                <img
+                  src={img.image_url}
+                  alt={`صورة ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
+                  <ExternalLink size={20} className="text-white opacity-0 group-hover:opacity-100 transition-all" />
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* الفني المسند */}
+      <div>
+        <h4 className="text-xs font-bold mb-2 uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+          الفني المسند
+        </h4>
         {req.technician_id ? (
           <div className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: "#d1fae5" }}>
             <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: "#10b981" }}>
               <Users size={14} className="text-white" />
             </div>
             <div>
-              <div className="font-bold text-sm" style={{ color: "#065f46" }}>{req.technician?.full_name || "فني"}</div>
+              <div className="font-bold text-sm" style={{ color: "#065f46" }}>
+                {req.technician?.full_name || "فني"}
+              </div>
               <div className="text-xs" style={{ color: "#059669" }}>تم الإسناد</div>
             </div>
           </div>
@@ -810,7 +893,8 @@ function RequestDetails({
             className="w-full flex items-center justify-center gap-2 font-bold py-2.5 rounded-xl text-sm text-white"
             style={{ backgroundColor: "#1e3a5f" }}
           >
-            <UserPlus size={15} />إسناد فني
+            <UserPlus size={15} />
+            إسناد فني
           </button>
         )}
       </div>
@@ -818,7 +902,9 @@ function RequestDetails({
       {/* تحديث الحالة */}
       {req.status !== "completed" && req.status !== "cancelled" && (
         <div className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>تحديث الحالة</h4>
+          <h4 className="text-xs font-bold uppercase tracking-widest" style={{ color: "rgba(30,58,95,0.4)" }}>
+            تحديث الحالة
+          </h4>
           {(req.status === "pending" || req.status === "assigned") && (
             <button
               onClick={() => onStatusUpdate(req.id, "in_progress")}
@@ -853,10 +939,40 @@ function RequestDetails({
         </div>
       )}
 
-      {/* اتصال */}
-      <a href={`tel:${req.customer_phone}`} className="w-full flex items-center justify-center gap-2 font-bold py-3 rounded-xl text-sm" style={{ backgroundColor: "#e8edf3", color: "#1e3a5f" }}>
-        <Phone size={15} />اتصل بالعميل
-      </a>
+      {/* اتصال بالعميل */}
+      <div className="flex gap-2">
+        <a
+          href={`tel:${req.customer_phone}`}
+          className="flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl text-sm"
+          style={{ backgroundColor: "#e8edf3", color: "#1e3a5f" }}
+        >
+          <Phone size={15} />
+          اتصل
+        </a>
+        <a
+          href={`https://wa.me/2${req.customer_phone}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl text-sm text-white"
+          style={{ backgroundColor: "#25d366" }}
+        >
+          <MessageSquare size={15} />
+          واتساب
+        </a>
+      </div>
+
+      {/* تاريخ الإنشاء */}
+      <div className="pt-3 border-t text-center" style={{ borderColor: "#e8edf3" }}>
+        <p className="text-xs" style={{ color: "rgba(30,58,95,0.4)" }}>
+          تاريخ الطلب: {new Date(req.created_at).toLocaleDateString("ar-EG", {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}
+        </p>
+      </div>
     </div>
   );
 }
