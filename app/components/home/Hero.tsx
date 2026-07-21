@@ -28,7 +28,7 @@ export default function Hero() {
             <h1 
               className="text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white animate-fade-in"
             >
-              Al Hadi Group
+              منصة الهادي جروب
             </h1>
             
             <p 

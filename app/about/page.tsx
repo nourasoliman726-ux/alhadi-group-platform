@@ -577,18 +577,7 @@ export default function AboutPage() {
                   اطلب خدمة الآن
                   <ArrowLeft size={18} />
                 </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all border"
-                  style={{
-                    backgroundColor: "rgba(232,237,243,0.1)",
-                    borderColor: "rgba(232,237,243,0.3)",
-                    color: "#e8edf3",
-                  }}
-                >
-                  <Phone size={20} />
-                  تواصل معنا
-                </Link>
+              
               </div>
             </div>
           </div>

@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { Menu, X, Phone, Mail, ChevronDown, MapPin } from "lucide-react";
-import Logo from "../ui/Logo";
+import { Menu, X, Phone, Mail, ChevronDown, MapPin, Wrench } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -43,7 +42,31 @@ export default function Navbar() {
       <div className="container-custom">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Logo variant="default" />
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#3b6fa0] to-[#1e3a5f] rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105 relative overflow-hidden">
+                {/* أيقونة المفتاح الإنجليزي */}
+                <Wrench className="text-white w-6 h-6 group-hover:rotate-12 transition-transform duration-300" strokeWidth={2.5} />
+                
+                {/* برق كهرباء صغير */}
+                <svg 
+                  className="absolute top-1 right-1 w-3 h-3 text-yellow-300 animate-pulse" 
+                  fill="currentColor" 
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M11 3L6 13h4l-1 4 5-10h-4l1-4z" />
+                </svg>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[#1e3a5f] font-bold text-lg leading-tight">
+                منصة الهادي جروب
+              </span>
+              <span className="text-[#3b6fa0] text-xs font-semibold">
+                للخدمات الفنية
+              </span>
+            </div>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-1">

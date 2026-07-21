@@ -150,7 +150,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* تلميح للتجربة */}
+        {/* تلميح للتجربة
         <div
           className="mt-6 p-4 rounded-xl text-xs"
           style={{ backgroundColor: "#e8edf3", color: "#3b6fa0" }}
@@ -158,7 +158,7 @@ export default function LoginPage() {
           <p className="font-bold mb-2">للتجربة:</p>
           <p>🔹 Admin: admin@alhadi.com / admin123</p>
           <p>🔹 Technician: tech@alhadi.com / tech123</p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
