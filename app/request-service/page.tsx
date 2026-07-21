@@ -6,7 +6,7 @@ import {
   Wrench, User, Phone, MapPin, FileText,
   Upload, CheckCircle, ChevronLeft, Send,
   Zap, HardHat, Building2, Camera, Network,
-  Navigation, Loader2
+  Navigation, Loader2, Clock, AlertCircle, Home
 } from "lucide-react";
 
 const services = [
@@ -18,36 +18,19 @@ const services = [
   { id: "maintenance", label: "صيانة عامة", icon: Wrench },
 ];
 
-const cities = [
-  "الإسكندرية",
-  "الإسماعيلية",
-  "أسوان",
-  "أسيوط",
-  "الأقصر",
-  "البحر الأحمر",
-  "البحيرة",
-  "الجيزة",
-  "الدقهلية",
-  "دمياط",
+const urgencyLevels = [
+  { id: "normal", label: "عادي", icon: "⏰", color: "#3b6fa0" },
+  { id: "urgent", label: "عاجل", icon: "⚡", color: "#f59e0b" },
+  { id: "emergency", label: "طارئ", icon: "🚨", color: "#ef4444" },
+];
 
-  "سوهاج",
-  "السويس",
-  "الشرقية",
-  "شمال سيناء",
-  "الغربية",
-  "الفيوم",
-  "القاهرة",
-  "القليوبية",
-  "قنا",
-  "كفر الشيخ",
-  "مطروح",
-  "المنوفية",
-  "المنيا",
-  "الوادي الجديد",
-  "بني سويف",
-  "بورسعيد",
-  "جنوب سيناء",
-  "أخرى"
+const cities = [
+  "الإسكندرية", "الإسماعيلية", "أسوان", "أسيوط", "الأقصر",
+  "البحر الأحمر", "البحيرة", "الجيزة", "الدقهلية", "دمياط",
+  "سوهاج", "السويس", "الشرقية", "شمال سيناء", "الغربية",
+  "الفيوم", "القاهرة", "القليوبية", "قنا", "كفر الشيخ",
+  "مطروح", "المنوفية", "المنيا", "الوادي الجديد",
+  "بني سويف", "بورسعيد", "جنوب سيناء", "أخرى"
 ];
 
 export default function RequestServicePage() {
@@ -57,6 +40,7 @@ export default function RequestServicePage() {
     city: "",
     address: "",
     serviceType: "",
+    urgency: "normal",
     description: "",
     latitude: "",
     longitude: "",
@@ -66,6 +50,7 @@ export default function RequestServicePage() {
   const [images, setImages] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [requestId, setRequestId] = useState<string>("");
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
 
@@ -78,6 +63,10 @@ export default function RequestServicePage() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
+      if (images.length + files.length > 5) {
+        alert("يمكنك رفع 5 صور كحد أقصى");
+        return;
+      }
       setImages((prev) => [...prev, ...files]);
     }
   };
@@ -130,6 +119,7 @@ export default function RequestServicePage() {
       city: "",
       address: "",
       serviceType: "",
+      urgency: "normal",
       description: "",
       latitude: "",
       longitude: "",
@@ -137,8 +127,10 @@ export default function RequestServicePage() {
     });
     setImages([]);
     setSuccess(false);
+    setRequestId("");
     setLocationError("");
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -150,23 +142,22 @@ export default function RequestServicePage() {
     setLoading(true);
 
     try {
-      // تركيب الإحداثيات إذا وُجدت
       const coordsString = formData.latitude && formData.longitude 
         ? `${formData.latitude},${formData.longitude}` 
         : null;
 
-      // تجهيز الكائن الذي سيتم إرساله للـ Database
       const insertData: any = {
         customer_name: formData.name,
         customer_phone: formData.phone,
         customer_address: formData.address,
         customer_city: formData.city,
-        service_category: formData.serviceType, 
+        service_category: formData.serviceType,
+        sub_service: formData.serviceType, // نفس القيمة كافتراضي
+        urgency: formData.urgency,
         description: formData.description,
         status: 'pending',
       };
 
-      // إضافة الحقول الاختيارية فقط إذا كانت تحتوي على قيم لتجنب أخطاء الـ Schema
       if (formData.locationLink) {
         insertData.location_link = formData.locationLink;
       }
@@ -174,19 +165,17 @@ export default function RequestServicePage() {
         insertData.location_coords = coordsString;
       }
 
-      // 1. إدخال الطلب في قاعدة البيانات
       const { data: request, error: requestError } = await supabase
         .from('service_requests')
         .insert([insertData])
         .select()
         .single();
 
-      // إذا حدث خطأ أثناء إدخال البيانات في الجدول، سيتم الإمساك به هنا فوراً
       if (requestError) {
-        throw new Error(`[خطأ في الجدول]: ${requestError.message} (${requestError.details || 'لا توجد تفاصيل إضافية'})`);
+        throw new Error(`خطأ في إرسال الطلب: ${requestError.message}`);
       }
 
-      // 2. رفع الصور من مصفوفة الـ images المنفصلة
+      // رفع الصور
       if (images.length > 0 && request) {
         for (const image of images) {
           const fileExtension = image.name.split('.').pop();
@@ -197,112 +186,36 @@ export default function RequestServicePage() {
             .upload(fileName, image);
 
           if (uploadError) {
-            throw new Error(`[خطأ في رفع الصورة]: ${uploadError.message}`);
+            console.warn('تحذير: فشل رفع إحدى الصور');
+            continue;
           }
 
-          // جلب رابط الصورة العام بعد الرفع بنجاح
           const { data: urlData } = supabase.storage
             .from('service-images')
             .getPublicUrl(fileName);
 
-          const { error: imgTableError } = await supabase.from('request_images').insert([
+          await supabase.from('request_images').insert([
             {
               request_id: request.id,
               image_url: urlData.publicUrl,
             },
           ]);
-
-          if (imgTableError) {
-            throw new Error(`[خطأ في جدول الصور]: ${imgTableError.message}`);
-          }
         }
       }
 
+      setRequestId(request.id);
       setSuccess(true);
+      
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
     } catch (error: any) {
       console.error('Error submitting request:', error);
-      // هنا قمنا بتعديل الـ Alert ليخبرك بالسبب الحقيقي والعمود المسبب للمشكلة فوراً!
-      alert(error.message || 'حدث خطأ غير متوقع في إرسال الطلب. الرجاء المحاولة مرة أخرى.');
+      alert(error.message || 'حدث خطأ في إرسال الطلب. الرجاء المحاولة مرة أخرى.');
     } finally {
       setLoading(false);
     }
   };
-
-  // const handleSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-    
-  //   if (!formData.serviceType) {
-  //     alert("الرجاء اختيار نوع الخدمة المطلوبة أولاً.");
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     // تركيب الإحداثيات إذا وُجدت
-  //     const coordsString = formData.latitude && formData.longitude 
-  //       ? `${formData.latitude},${formData.longitude}` 
-  //       : null;
-
-  //     // 1. إدخال الطلب في قاعدة البيانات ومطابقة الأسماء الصحيحة للجدول
-  //     const { data: request, error: requestError } = await supabase
-  //       .from('service_requests')
-  //       .insert([
-  //         {
-  //           customer_name: formData.name,
-  //           customer_phone: formData.phone,
-  //           customer_address: formData.address,
-  //           customer_city: formData.city,
-  //           service_category: formData.serviceType, // تم التعديل لتطابق الـ State
-  //           sub_service: formData.serviceType,      // القيمة الافتراضية للفرعي
-  //           description: formData.description,
-  //           urgency: 'normal',
-  //           location_link: formData.locationLink || null,
-  //           location_coords: coordsString,
-  //           status: 'pending',
-  //         },
-  //       ])
-  //       .select()
-  //       .single();
-
-  //     if (requestError) throw requestError;
-
-  //     // 2. رفع الصور من مصفوفة الـ images المنفصلة
-  //     if (images.length > 0 && request) {
-  //       for (const image of images) {
-  //         const fileExtension = image.name.split('.').pop();
-  //         const fileName = `${request.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExtension}`;
-          
-  //         const { error: uploadError } = await supabase.storage
-  //           .from('service-images')
-  //           .upload(fileName, image);
-
-  //         if (!uploadError) {
-  //           // جلب رابط الصورة العام بعد الرفع بنجاح
-  //           const { data: urlData } = supabase.storage
-  //             .from('service-images')
-  //             .getPublicUrl(fileName);
-
-  //           await supabase.from('request_images').insert([
-  //             {
-  //               request_id: request.id,
-  //               image_url: urlData.publicUrl,
-  //             },
-  //           ]);
-  //         } else {
-  //           console.error('تنبيّه: فشل رفع إحدى الصور:', uploadError);
-  //         }
-  //       }
-  //     }
-
-  //     setSuccess(true);
-  //   } catch (error) {
-  //     console.error('Error submitting request:', error);
-  //     alert('حدث خطأ في إرسال الطلب. الرجاء المحاولة مرة أخرى.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8fafc" }}>
@@ -411,57 +324,162 @@ export default function RequestServicePage() {
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-6">
 
-          {/* ===== 🎉 رسالة النجاح ===== */}
+          {/* ===== 🎉 رسالة النجاح المحسّنة ===== */}
           {success ? (
-            <div
-              className="bg-white rounded-3xl border p-12 md:p-16 text-center"
-              style={{ borderColor: "#10b981" }}
-            >
+            <div className="space-y-6">
+              {/* Success Card */}
               <div
-                className="w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center animate-bounce"
-                style={{ backgroundColor: "rgba(16,185,129,0.15)" }}
+                className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl border-2 p-8 md:p-12 text-center relative overflow-hidden"
+                style={{ borderColor: "#10b981" }}
               >
-                <CheckCircle size={48} style={{ color: "#10b981" }} />
+                {/* Background Pattern */}
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
+                  <CheckCircle size={128} style={{ color: "#10b981" }} />
+                </div>
+
+                <div
+                  className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center relative z-10"
+                  style={{ backgroundColor: "#10b981" }}
+                >
+                  <CheckCircle size={40} className="text-white animate-bounce" />
+                </div>
+
+                <h2
+                  className="text-3xl md:text-4xl font-black mb-3 relative z-10"
+                  style={{ color: "#065f46" }}
+                >
+                  تم إرسال طلبك بنجاح! 🎉
+                </h2>
+
+                <p
+                  className="text-lg leading-relaxed mb-6 max-w-2xl mx-auto relative z-10"
+                  style={{ color: "#047857" }}
+                >
+                  شكراً لثقتك بنا! تم استلام طلبك وسيتواصل معك فريقنا المتخصص
+                  <strong className="font-black"> خلال 30 دقيقة </strong>
+                  لتحديد موعد الزيارة.
+                </p>
+
+                {/* Request Details */}
+                <div
+                  className="bg-white rounded-2xl p-6 mb-6 text-right max-w-md mx-auto relative z-10"
+                  style={{ border: "2px solid #10b981" }}
+                >
+                  <h3 className="font-bold mb-4 text-center" style={{ color: "#065f46" }}>
+                    📋 تفاصيل طلبك
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span style={{ color: "#047857" }}>رقم الطلب:</span>
+                      <span className="font-mono font-bold" style={{ color: "#065f46" }}>
+                        #{requestId.slice(0, 8)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span style={{ color: "#047857" }}>نوع الخدمة:</span>
+                      <span className="font-bold" style={{ color: "#065f46" }}>
+                        {services.find(s => s.id === formData.serviceType)?.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span style={{ color: "#047857" }}>الأولوية:</span>
+                      <span className="font-bold" style={{ color: "#065f46" }}>
+                        {urgencyLevels.find(u => u.id === formData.urgency)?.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span style={{ color: "#047857" }}>رقم التواصل:</span>
+                      <span className="font-bold" dir="ltr" style={{ color: "#065f46" }}>
+                        {formData.phone}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info Boxes */}
+                <div className="grid md:grid-cols-2 gap-4 mb-8 relative z-10">
+                  <div
+                    className="bg-white rounded-xl p-4 border-2"
+                    style={{ borderColor: "#10b981" }}
+                  >
+                    <Clock size={24} className="mx-auto mb-2" style={{ color: "#059669" }} />
+                    <p className="font-bold text-sm" style={{ color: "#065f46" }}>
+                      وقت الاستجابة المتوقع
+                    </p>
+                    <p className="text-xs mt-1" style={{ color: "#047857" }}>
+                      خلال 30 دقيقة من الآن
+                    </p>
+                  </div>
+
+                  <div
+                    className="bg-white rounded-xl p-4 border-2"
+                    style={{ borderColor: "#10b981" }}
+                  >
+                    <Phone size={24} className="mx-auto mb-2" style={{ color: "#059669" }} />
+                    <p className="font-bold text-sm" style={{ color: "#065f46" }}>
+                      طريقة التواصل
+                    </p>
+                    <p className="text-xs mt-1" style={{ color: "#047857" }}>
+                      مكالمة هاتفية مباشرة
+                    </p>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-10">
+                  <button
+                    onClick={resetForm}
+                    className="flex items-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 text-white shadow-lg"
+                    style={{ backgroundColor: "#1e3a5f" }}
+                  >
+                    <Wrench size={20} />
+                    طلب خدمة جديدة
+                  </button>
+
+                  <Link
+                    href="/"
+                    className="flex items-center gap-3 font-bold px-8 py-4 rounded-2xl border-2 transition-all hover:scale-105 bg-white shadow-md"
+                    style={{ borderColor: "#10b981", color: "#065f46" }}
+                  >
+                    <Home size={20} />
+                    العودة للرئيسية
+                  </Link>
+                </div>
               </div>
 
-              <h2
-                className="text-3xl md:text-4xl font-black mb-4"
-                style={{ color: "#065f46" }}
+              {/* Additional Info */}
+              <div
+                className="bg-blue-50 rounded-2xl p-6 border text-right"
+                style={{ borderColor: "#3b6fa0" }}
               >
-                🎉 تم إرسال طلبك بنجاح!
-              </h2>
-
-              <p
-                className="text-lg leading-relaxed mb-8 max-w-2xl mx-auto"
-                style={{ color: "#047857" }}
-              >
-                شكراً لك! سيتواصل معك فريقنا خلال <strong>30 دقيقة</strong> لتحديد موعد الزيارة.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button
-                  onClick={resetForm}
-                  className="flex items-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 text-white"
-                  style={{ backgroundColor: "#1e3a5f" }}
-                >
-                  <Wrench size={20} />
-                  اطلب خدمة مرة أخرى
-                </button>
-
-                <Link
-                  href="/"
-                  className="flex items-center gap-3 font-bold px-8 py-4 rounded-2xl border transition-all"
-                  style={{ borderColor: "#10b981", color: "#065f46" }}
-                >
-                  <ChevronLeft size={20} />
-                  العودة للرئيسية
-                </Link>
+                <div className="flex items-start gap-3">
+                  <AlertCircle size={24} className="flex-shrink-0 mt-1" style={{ color: "#3b6fa0" }} />
+                  <div>
+                    <h4 className="font-bold mb-2" style={{ color: "#1e3a5f" }}>
+                      ماذا بعد؟
+                    </h4>
+                    <ul className="text-sm space-y-2" style={{ color: "#1e3a5f" }}>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg">1️⃣</span>
+                        <span>سيتصل بك أحد ممثلي خدمة العملاء خلال 30 دقيقة</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg">2️⃣</span>
+                        <span>سيتم تحديد موعد الزيارة بما يناسبك</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-lg">3️⃣</span>
+                        <span>سيصلك فني متخصص في الموعد المحدد</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
             /* ===== النموذج الكلي ===== */
             <div
-              className="bg-white rounded-3xl border p-8 md:p-10"
+              className="bg-white rounded-3xl border p-8 md:p-10 shadow-lg"
               style={{ borderColor: "#e8edf3" }}
             >
               <form onSubmit={handleSubmit}>
@@ -470,7 +488,7 @@ export default function RequestServicePage() {
                 <div className="mb-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white shadow-md"
                       style={{ backgroundColor: "#1e3a5f" }}
                     >
                       1
@@ -494,7 +512,7 @@ export default function RequestServicePage() {
                         onChange={handleChange}
                         required
                         placeholder="أدخل اسمك الكامل"
-                        className="w-full px-4 py-3 rounded-xl border transition-all outline-none"
+                        className="w-full px-4 py-3 rounded-xl border-2 transition-all outline-none focus:border-[#3b6fa0]"
                         style={{ borderColor: "#e8edf3", color: "#0f1b3d" }}
                       />
                     </div>
@@ -512,7 +530,7 @@ export default function RequestServicePage() {
                         onChange={handleChange}
                         required
                         placeholder="01xxxxxxxxx"
-                        className="w-full px-4 py-3 rounded-xl border transition-all outline-none"
+                        className="w-full px-4 py-3 rounded-xl border-2 transition-all outline-none focus:border-[#3b6fa0]"
                         style={{ borderColor: "#e8edf3", color: "#0f1b3d" }}
                       />
                     </div>
@@ -528,7 +546,7 @@ export default function RequestServicePage() {
                         value={formData.city}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 rounded-xl border transition-all outline-none"
+                        className="w-full px-4 py-3 rounded-xl border-2 transition-all outline-none focus:border-[#3b6fa0]"
                         style={{ borderColor: "#e8edf3", color: "#0f1b3d" }}
                       >
                         <option value="">اختر المدينة</option>
@@ -551,7 +569,7 @@ export default function RequestServicePage() {
                         onChange={handleChange}
                         required
                         placeholder="الشارع، الحي، رقم المبنى"
-                        className="w-full px-4 py-3 rounded-xl border transition-all outline-none"
+                        className="w-full px-4 py-3 rounded-xl border-2 transition-all outline-none focus:border-[#3b6fa0]"
                         style={{ borderColor: "#e8edf3", color: "#0f1b3d" }}
                       />
                     </div>
@@ -563,7 +581,7 @@ export default function RequestServicePage() {
                       type="button"
                       onClick={getCurrentLocation}
                       disabled={locationLoading}
-                      className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl border transition-all font-bold"
+                      className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl border-2 transition-all font-bold hover:scale-[1.02]"
                       style={{
                         borderColor: formData.locationLink ? "#10b981" : "#e8edf3",
                         backgroundColor: formData.locationLink ? "rgba(16,185,129,0.1)" : "white",
@@ -584,7 +602,7 @@ export default function RequestServicePage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={(e) => e.stopPropagation()}
-                            className="text-xs underline mr-2"
+                            className="text-xs underline mr-2 hover:text-[#047857]"
                             style={{ color: "#059669" }}
                           >
                             عرض على الخريطة
@@ -593,7 +611,7 @@ export default function RequestServicePage() {
                       ) : (
                         <>
                           <Navigation size={20} />
-                          حدد موقعي الحالي
+                          حدد موقعي الحالي (اختياري)
                         </>
                       )}
                     </button>
@@ -616,7 +634,8 @@ export default function RequestServicePage() {
                     )}
 
                     {locationError && (
-                      <p className="text-xs mt-2 text-center" style={{ color: "#ef4444" }}>
+                      <p className="text-xs mt-2 text-center flex items-center justify-center gap-2" style={{ color: "#ef4444" }}>
+                        <AlertCircle size={14} />
                         {locationError}
                       </p>
                     )}
@@ -627,52 +646,90 @@ export default function RequestServicePage() {
                 <div className="mb-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white shadow-md"
                       style={{ backgroundColor: "#1e3a5f" }}
                     >
                       2
                     </div>
                     <h2 className="text-2xl font-black" style={{ color: "#0f1b3d" }}>
-                      نوع الخدمة المطلوبة
+                      نوع الخدمة والأولوية
                     </h2>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {services.map((service) => {
-                      const Icon = service.icon;
-                      const isSelected = formData.serviceType === service.id;
-                      return (
-                        <button
-                          key={service.id}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, serviceType: service.id })}
-                          className="p-4 rounded-2xl border transition-all text-right"
-                          style={{
-                            borderColor: isSelected ? "#3b6fa0" : "#e8edf3",
-                            backgroundColor: isSelected ? "rgba(59,111,160,0.08)" : "white",
-                          }}
-                        >
-                          <Icon
-                            size={24}
-                            className="mb-3"
-                            style={{ color: isSelected ? "#3b6fa0" : "#1e3a5f" }}
-                          />
-                          <div
-                            className="font-bold text-sm"
-                            style={{ color: isSelected ? "#0f1b3d" : "#1e3a5f" }}
+                  {/* نوع الخدمة */}
+                  <div className="mb-6">
+                    <label className="block font-bold mb-3 text-sm" style={{ color: "#1e3a5f" }}>
+                      اختر نوع الخدمة *
+                    </label>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {services.map((service) => {
+                        const Icon = service.icon;
+                        const isSelected = formData.serviceType === service.id;
+                        return (
+                          <button
+                            key={service.id}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, serviceType: service.id })}
+                            className="p-4 rounded-2xl border-2 transition-all text-right hover:scale-105"
+                            style={{
+                              borderColor: isSelected ? "#3b6fa0" : "#e8edf3",
+                              backgroundColor: isSelected ? "rgba(59,111,160,0.1)" : "white",
+                            }}
                           >
-                            {service.label}
-                          </div>
-                          {isSelected && (
-                            <CheckCircle
-                              size={18}
-                              className="mt-2"
-                              style={{ color: "#3b6fa0" }}
+                            <Icon
+                              size={28}
+                              className="mb-3"
+                              style={{ color: isSelected ? "#3b6fa0" : "#1e3a5f" }}
                             />
-                          )}
-                        </button>
-                      );
-                    })}
+                            <div
+                              className="font-bold text-sm"
+                              style={{ color: isSelected ? "#0f1b3d" : "#1e3a5f" }}
+                            >
+                              {service.label}
+                            </div>
+                            {isSelected && (
+                              <CheckCircle
+                                size={18}
+                                className="mt-2"
+                                style={{ color: "#3b6fa0" }}
+                              />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* مستوى الأولوية */}
+                  <div>
+                    <label className="block font-bold mb-3 text-sm" style={{ color: "#1e3a5f" }}>
+                      مستوى الأولوية *
+                    </label>
+                    <div className="grid grid-cols-3 gap-4">
+                      {urgencyLevels.map((level) => {
+                        const isSelected = formData.urgency === level.id;
+                        return (
+                          <button
+                            key={level.id}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, urgency: level.id })}
+                            className="p-4 rounded-2xl border-2 transition-all hover:scale-105"
+                            style={{
+                              borderColor: isSelected ? level.color : "#e8edf3",
+                              backgroundColor: isSelected ? `${level.color}15` : "white",
+                            }}
+                          >
+                            <div className="text-2xl mb-2">{level.icon}</div>
+                            <div
+                              className="font-bold text-sm"
+                              style={{ color: isSelected ? level.color : "#1e3a5f" }}
+                            >
+                              {level.label}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
@@ -680,7 +737,7 @@ export default function RequestServicePage() {
                 <div className="mb-10">
                   <div className="flex items-center gap-3 mb-6">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white shadow-md"
                       style={{ backgroundColor: "#1e3a5f" }}
                     >
                       3
@@ -702,7 +759,7 @@ export default function RequestServicePage() {
                       required
                       rows={5}
                       placeholder="اشرح المشكلة أو الخدمة التي تحتاجها بالتفصيل..."
-                      className="w-full px-4 py-3 rounded-xl border transition-all outline-none resize-none"
+                      className="w-full px-4 py-3 rounded-xl border-2 transition-all outline-none resize-none focus:border-[#3b6fa0]"
                       style={{ borderColor: "#e8edf3", color: "#0f1b3d" }}
                     />
                   </div>
@@ -710,11 +767,12 @@ export default function RequestServicePage() {
                   <div>
                     <label className="block font-bold mb-2 text-sm" style={{ color: "#1e3a5f" }}>
                       <Upload size={16} className="inline ml-2" />
-                      إرفاق صور (اختياري)
+                      إرفاق صور (اختياري - حتى 5 صور)
                     </label>
                     <div
-                      className="border-2 border-dashed rounded-2xl p-6 text-center transition-all"
+                      className="border-2 border-dashed rounded-2xl p-8 text-center transition-all hover:border-[#3b6fa0] hover:bg-[#f8fafc] cursor-pointer"
                       style={{ borderColor: "#e8edf3" }}
+                      onClick={() => document.getElementById('image-upload')?.click()}
                     >
                       <input
                         type="file"
@@ -724,23 +782,21 @@ export default function RequestServicePage() {
                         className="hidden"
                         id="image-upload"
                       />
-                      <label htmlFor="image-upload" className="cursor-pointer inline-block">
-                        <Upload size={32} className="mx-auto mb-3" style={{ color: "#3b6fa0" }} />
-                        <p className="font-semibold mb-1" style={{ color: "#1e3a5f" }}>
-                          اضغط لرفع الصور
-                        </p>
-                        <p className="text-xs" style={{ color: "rgba(30,58,95,0.5)" }}>
-                          يمكنك رفع عدة صور لتوضيح المشكلة
-                        </p>
-                      </label>
+                      <Upload size={40} className="mx-auto mb-3" style={{ color: "#3b6fa0" }} />
+                      <p className="font-semibold mb-1" style={{ color: "#1e3a5f" }}>
+                        اضغط لرفع الصور
+                      </p>
+                      <p className="text-xs" style={{ color: "rgba(30,58,95,0.5)" }}>
+                        يمكنك رفع حتى 5 صور (JPG, PNG) لتوضيح المشكلة
+                      </p>
                     </div>
 
                     {images.length > 0 && (
-                      <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mt-4">
+                      <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mt-4">
                         {images.map((image, index) => (
                           <div
                             key={index}
-                            className="relative group rounded-xl overflow-hidden border"
+                            className="relative group rounded-xl overflow-hidden border-2"
                             style={{ borderColor: "#e8edf3" }}
                           >
                             <img
@@ -751,10 +807,13 @@ export default function RequestServicePage() {
                             <button
                               type="button"
                               onClick={() => removeImage(index)}
-                              className="absolute top-1 left-1 w-6 h-6 rounded-full flex items-center justify-center text-white bg-red-500 bg-opacity-90 transition-opacity"
+                              className="absolute top-1 left-1 w-7 h-7 rounded-full flex items-center justify-center text-white bg-red-500 hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100 text-lg font-bold"
                             >
                               ×
                             </button>
+                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs py-1 text-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              صورة {index + 1}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -763,37 +822,37 @@ export default function RequestServicePage() {
                 </div>
 
                 {/* ===== زر الإرسال ===== */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="space-y-4">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="flex-1 flex items-center justify-center gap-3 font-bold px-8 py-4 rounded-2xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-white"
+                    className="w-full flex items-center justify-center gap-3 font-bold px-8 py-5 rounded-2xl transition-all hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed text-white shadow-xl disabled:hover:scale-100"
                     style={{ backgroundColor: "#1e3a5f" }}
                   >
                     {loading ? (
                       <>
-                        <Loader2 size={20} className="animate-spin" />
-                        جاري الإرسال...
+                        <Loader2 size={24} className="animate-spin" />
+                        جاري إرسال الطلب...
                       </>
                     ) : (
                       <>
-                        <Send size={20} />
+                        <Send size={24} />
                         إرسال الطلب
                       </>
                     )}
                   </button>
-                </div>
 
-                <p
-                  className="text-xs text-center mt-6 leading-relaxed"
-                  style={{ color: "rgba(30,58,95,0.5)" }}
-                >
-                  بإرسال هذا النموذج، أنت توافق على{" "}
-                  <Link href="/privacy" className="underline">
-                    سياسة الخصوصية
-                  </Link>
-                  . بياناتك آمنة ولن تُستخدم إلا للتواصل معك بخصوص طلبك.
-                </p>
+                  <p
+                    className="text-xs text-center leading-relaxed px-4"
+                    style={{ color: "rgba(30,58,95,0.6)" }}
+                  >
+                    🔒 بإرسال هذا النموذج، أنت توافق على{" "}
+                    <Link href="/privacy" className="underline font-bold hover:text-[#3b6fa0]">
+                      سياسة الخصوصية
+                    </Link>
+                    . بياناتك محمية بالكامل ولن تُستخدم إلا للتواصل معك بخصوص طلبك.
+                  </p>
+                </div>
               </form>
             </div>
           )}
@@ -801,4 +860,4 @@ export default function RequestServicePage() {
       </section>
     </div>
   );
-};
+}
